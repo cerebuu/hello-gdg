@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react(), tailwindcss()],
     publicDir: '../public',
     server: {
-      port: 5173,
+      port: Number(process.env.CLIENT_PORT || 5173),
       strictPort: true,
       proxy: {
         '/api': `http://127.0.0.1:${port}`,

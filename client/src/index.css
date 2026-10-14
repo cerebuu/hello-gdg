@@ -308,3 +308,31 @@ button:disabled { cursor: not-allowed; opacity: .53; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Existing API flow, displayed within Szi's presentation. */
+.wired-disclaimer, .wired-message, .wired-error { padding: 12px 15px; border-radius: 10px; font-size: 14px; line-height: 1.6; }
+.wired-disclaimer, .wired-message { background: #fff8e9; border: 1px solid #eddcb8; color: #715628; }
+.wired-error { background: #fff0ed; color: #8d3426; border: 1px solid #e6baaf; }
+.wired-samples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.wired-samples p, .wired-samples label, .wired-samples small { width: 100%; }
+.wired-samples select { display: block; width: 100%; min-height: 44px; margin-top: 8px; border: 1px solid #cbd9c3; border-radius: 8px; padding: 8px; background: white; color: var(--forest); }
+.wired-samples .button-secondary { font-size: 12px; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.share { padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 15px; }
+.share h2, .share h3 { color: var(--forest); }
+.share p, .share li, .share label { font-size: 16px; line-height: 1.6; }
+.share input, .share textarea { display: block; width: 100%; min-height: 44px; border: 1px solid #cbd9c3; border-radius: 8px; padding: 10px; margin: 10px 0; font: inherit; }
+.share button { min-height: 44px; border: 1px solid #cbd9c3; border-radius: 8px; padding: 10px 14px; background: var(--forest); color: white; cursor: pointer; }
+.share .button-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+.share .print-report, .share .farmer-card { border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin: 20px 0; overflow-wrap: anywhere; }
+.share .report-photo { width: 100%; max-height: 260px; object-fit: contain; }
+.share ol { padding-left: 28px; list-style: decimal; }
+.share .farmer-card li { font-size: 24px; margin: 20px 0; }
+.share .provenance { font-weight: 700; color: #715628; }
+@media print {
+  .topbar, .bottom-nav, .back-link, .page-heading, .wired-disclaimer, .wired-message, .wired-error, .toast { display: none; }
+  .app-shell, .main-layout, .page-wrap, .report-page, .share { margin: 0; padding: 0; border: 0; max-width: none; background: white; }
+  .share > * { display: none; }
+  body[data-print=report] .share > .print-report, body[data-print=farmer] .share > .farmer-card { display: block; margin: 0; padding: 0; border: 0; }
+  .share .farmer-card li { font-size: 22pt; break-inside: avoid; }
+}

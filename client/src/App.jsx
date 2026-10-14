@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { preparePhoto } from './photo.js'
+import { requestDiagnosis } from './diagnose.js'
+import ShareReport from './components/ShareReport.jsx'
+import samples from '../../data/samples.json'
 
 const photos = {
   banana: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=1100&q=78',
@@ -49,7 +53,7 @@ const copy = {
     farmRegion: 'Davao Region · Para sa atong mag-uuma',
     farmCredit: 'Gibuhat alang sa mga mag-uuma sa Davao',
     readyTitle: 'Andam mosusi',
-    readyText: 'Online ka karon. Ang litrato ipadala alang sa demo nga pagsusi.',
+    readyText: 'Ang litrato ipadala sa Gemini pinaagi sa among server alang sa posibleng giya.',
     plantsDescription: 'Duha ka tanom sa atong rehiyon',
     plantParts: 'Mga dahon ug bunga',
     analysisDemo: 'Sample nga demonstrasyon · Dili tinuod nga AI diagnosis',
@@ -117,7 +121,7 @@ const copy = {
     farmRegion: 'Rehiyon ng Davao · Para sa ating mga magsasaka',
     farmCredit: 'Para sa mga magsasaka ng Davao',
     readyTitle: 'Handa nang magsuri',
-    readyText: 'May internet ka. Ipapadala ang larawan para sa demo na pagsusuri.',
+    readyText: 'Ipapadala ang larawan sa Gemini sa pamamagitan ng aming server para sa posibleng gabay.',
     plantsDescription: 'Dalawang pananim sa ating rehiyon',
     plantParts: 'Mga dahon at bunga',
     analysisDemo: 'Sample na demonstrasyon · Hindi totoong AI diagnosis',
@@ -143,32 +147,6 @@ const copy = {
     expertRecommendation: 'Kumonsulta sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Halimbawa: Davao del Sur',
   },
-}
-
-const recommendations = {
-  banana: [
-    ['Unsa ang buhaton karon?', 'Putla ug tangtanga ang mga dahon nga daghan og itom nga mga tuldok. Ayaw kini ibilin sa yuta.'],
-    ['Unsaon pagpugong sa pagkaylap?', 'Limpyohi ang mga gunting human gamita. Hatagi og igong gilay-on ang mga punoan ug ayaw bas-a ang mga dahon.'],
-    ['Kanus-a mangayo og tabang?', 'Kon mokatag ang mga tuldok bisan natangtang na ang mga dahon, pakigsulti sa inyong agricultural technician.'],
-  ],
-  cacao: [
-    ['Unsa ang buhaton karon?', 'Kuhaa ang bunga nga nangitom o nangadunot. Ibutang kini sa layo sa mga himsog nga punoan.'],
-    ['Unsaon pagpugong sa pagkaylap?', 'Kuhaa ang mga sagbot ug palig-ona ang agianan sa hangin taliwala sa mga sanga. Susiha kanunay ang mga bunga.'],
-    ['Kanus-a mangayo og tabang?', 'Kon daghang bunga ang maapektuhan o dili ka sigurado, pakigsulti sa inyong agricultural technician.'],
-  ],
-}
-
-const recommendationsFilipino = {
-  banana: [
-    ['Ano ang dapat gawin ngayon?', 'Putulin at alisin ang mga dahong maraming maiitim na batik. Huwag iwan ang mga ito sa lupa.'],
-    ['Paano mapipigilan ang pagkalat?', 'Linisin ang gunting pagkatapos gamitin. Bigyan ng sapat na pagitan ang mga puno at iwasang mabasa ang mga dahon.'],
-    ['Kailan hihingi ng tulong?', 'Kung kumakalat pa ang mga batik kahit naalis na ang mga dahon, kumonsulta sa inyong agricultural technician.'],
-  ],
-  cacao: [
-    ['Ano ang dapat gawin ngayon?', 'Alisin ang mga nangingitim o nabubulok na bunga. Ilayo ang mga ito sa malulusog na puno.'],
-    ['Paano mapipigilan ang pagkalat?', 'Alisin ang mga damo at panatilihing maaliwalas ang pagitan ng mga sanga. Regular na suriin ang mga bunga.'],
-    ['Kailan hihingi ng tulong?', 'Kung maraming bunga ang apektado o hindi ka sigurado, kumonsulta sa inyong agricultural technician.'],
-  ],
 }
 
 function Icon({ name, size = 20, ...props }) {
@@ -212,8 +190,16 @@ function App() {
   const [notice, setNotice] = useState('')
   const [location, setLocation] = useState('')
   const fileInput = useRef(null)
+  const cameraInput = useRef(null)
+  const [result, setResult] = useState(null)
+  const [outcome, setOutcome] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [activeSample, setActiveSample] = useState(samples[0])
+  const pending = useRef(null)
+  useEffect(() => () => pending.current?.abort(), [])
   const t = copy[language]
-  const localizedRecommendations = language === 'filipino' ? recommendationsFilipino : recommendations
+  const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}. ${t.nextStepsTitle}`, step]) : []
 
   useEffect(() => {
     document.documentElement.lang = language === 'filipino' ? 'fil' : 'ceb'
@@ -224,30 +210,66 @@ function App() {
     window.setTimeout(() => setNotice(''), 3600)
   }
 
-  function runAnalysis(selectedCrop = crop, selectedPhoto = null) {
-    setCrop(selectedCrop)
-    if (selectedPhoto) setPhoto(selectedPhoto)
-    if (!online) {
-      setPage('offline')
-      return
-    }
-    setPhoto(selectedPhoto || photos[selectedCrop])
+  function selectSample(sample) {
+    setActiveSample(sample)
+    setError('')
+    setPhoto(sample.imagePath)
+    setResult(sample.results[language])
+    setOutcome({ result: sample.results[language], sample, source: 'sample', language,
+      image: sample.imagePath, date: new Date().toISOString() })
     setPage('result')
   }
 
-  function handleFile(event) {
-    const file = event.target.files?.[0]
-    if (!file) return
-    if (!file.type.startsWith('image/')) {
-      showNotice('Palihog pagpili og hulagway nga litrato.')
-      event.target.value = ''
-      return
+  function changeLanguage(value) {
+    setLanguage(value)
+    if (outcome?.sample) {
+      const next = outcome.sample.results[value]
+      setResult(next)
+      setOutcome({ ...outcome, result: next, language: value })
+    } else if (outcome) { setOutcome(null); setResult(null); setPage('home') }
+  }
+
+  async function runAnalysis(selectedCrop = crop, selectedPhoto = null, prepared = null) {
+    if (loading) return
+    setCrop(selectedCrop)
+    const backup = samples.find(item => item.id === activeSample.id)
+    const input = prepared || (selectedPhoto?.startsWith('data:') ? {
+      preview: selectedPhoto, imageBase64: selectedPhoto.split(',')[1],
+      mimeType: selectedPhoto.slice(5, selectedPhoto.indexOf(';')),
+    } : null)
+    if (!input) { selectSample(backup); return }
+    setPhoto(input.preview)
+    setResult(null); setOutcome(null); setError(''); setLoading(true)
+    const controller = new AbortController()
+    pending.current = controller
+    const timer = setTimeout(() => controller.abort(), 15000)
+    try {
+      if (!online) throw new Error('Live diagnosis unavailable. Showing a selected SAMPLE, not a diagnosis of your photo.')
+      const next = await requestDiagnosis(input, language, controller.signal)
+      setResult(next)
+      setOutcome({ result: next, source: 'live', language, image: input.preview, date: new Date().toISOString() })
+    } catch (problem) {
+      setError(problem.name === 'AbortError' ? 'The check took over 15 seconds.' : problem.message)
+      setPhoto(backup.imagePath)
+      setResult(backup.results[language])
+      setOutcome({ result: backup.results[language], sample: backup, source: 'offline', language,
+        image: backup.imagePath, date: new Date().toISOString() })
+    } finally {
+      clearTimeout(timer); pending.current = null; setLoading(false); setPage('result')
     }
-    const reader = new FileReader()
-    reader.onload = () => runAnalysis(crop, reader.result)
-    reader.onerror = () => showNotice('Wala mabasa ang litrato. Sulayi pag-usab.')
-    reader.readAsDataURL(file)
+  }
+
+  async function handleFile(event) {
+    const file = event.target.files?.[0]
     event.target.value = ''
+    if (!file || loading) return
+    setError('')
+    setLoading(true)
+    let prepared
+    try { prepared = await preparePhoto(file) }
+    catch (problem) { setError(problem.message || 'Please choose another photo.'); setLoading(false); return }
+    setLoading(false)
+    await runAnalysis(crop, prepared.preview, prepared)
   }
 
   async function saveOfflinePhoto() {
@@ -293,42 +315,12 @@ function App() {
     setOnline(true)
   }
 
-  function downloadReport() {
-    const report = {
-      title: 'Bisaya Crop Doctor — Sample Report',
-      crop: t[crop],
-      predictedDisease: crop === 'banana' ? 'Black Sigatoka' : 'Black Pod Rot',
-      confidence: crop === 'banana' ? '87%' : '91%',
-      submittedAt: new Date().toLocaleString('en-PH'),
-      location: location || 'Wala gihatag',
-      recommendations: localizedRecommendations[crop].map((item) => item[1]),
-      note: 'Sample demonstration only. AI prediction, not a confirmed diagnosis.',
-    }
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'bisaya-crop-doctor-report.json'
-    link.click()
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
-    showNotice('Na-save ang report sa imong device.')
-  }
-
-  function shareReport() {
-    showNotice('Demo lamang: gi-simulate ang malampusong pag-share sa Agri Office.')
-  }
-
   function startPhotoFlow() {
-    if (!online) {
-      setPhoto(null)
-      setPage('offline')
-      return
-    }
-    runAnalysis()
+    cameraInput.current?.click()
   }
 
-  const disease = crop === 'banana' ? 'Black Sigatoka' : 'Black Pod Rot'
-  const confidence = crop === 'banana' ? 87 : 91
+  const disease = result?.problemNameEnglish || ''
+  const confidence = result?.confidence || 'Low'
   const section = page === 'result' || page === 'report' || page === 'offline' ? 'home' : page
 
   return (
@@ -338,8 +330,8 @@ function App() {
           <Brand t={t} onHome={() => setPage('home')} />
           <div className="top-actions">
             <div className="language-switch" aria-label="Pilia ang pinulongan">
-              <button className={language === 'bisaya' ? 'active' : ''} onClick={() => setLanguage('bisaya')}>Bisaya</button>
-              <button className={language === 'filipino' ? 'active' : ''} onClick={() => setLanguage('filipino')}>Filipino</button>
+              <button className={language === 'bisaya' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('bisaya')}>Bisaya</button>
+              <button className={language === 'filipino' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('filipino')}>Filipino</button>
             </div>
             <button className={`connection-pill ${online ? 'is-online' : 'is-offline'}`} onClick={toggleConnection} aria-label={online ? 'Switch to offline demo state' : 'Switch to online demo state'}>
               <Icon name={online ? 'wifi' : 'wifiOff'} size={16} />
@@ -348,10 +340,15 @@ function App() {
           </div>
         </div>
       </header>
-      <input ref={fileInput} className="visually-hidden" type="file" accept="image/*" capture="environment" onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : 'Pilia ang hulagway sa tanom'} />
+      <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled={loading} onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : 'Pilia ang hulagway sa tanom'} />
 
+      <input ref={cameraInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" disabled={loading} onChange={handleFile} aria-label="Take plant photo" />
       <main className="main-layout">
         <div className="page-wrap">
+          <p className="wired-disclaimer">This is a decision aid, not a lab diagnosis.</p>
+          {loading && <p className="wired-message" role="status">{t.analyzing}</p>}
+          {error && <p className="wired-error" role="alert">{error}</p>}
+          {outcome?.source === 'offline' && <p className="wired-message">Offline demo mode · SAMPLE: {outcome.sample.label}. Not a diagnosis of your uploaded photo.</p>}
           {page !== 'home' && page !== 'saved' && page !== 'help' && (
             <button className="back-link" onClick={() => setPage(page === 'report' ? 'result' : 'home')}><Icon name="back" size={17} /> {t.backHome}</button>
           )}
@@ -395,22 +392,26 @@ function App() {
                       <span className="step-number">01</span>
                     </div>
                     <div className="crop-options">
-                      <button className={`crop-option ${crop === 'banana' ? 'selected' : ''}`} onClick={() => setCrop('banana')} aria-pressed={crop === 'banana'}>
+                      <button className={`crop-option ${crop === 'banana' ? 'selected' : ''}`} disabled={loading} onClick={() => { setCrop('banana'); setActiveSample(samples[0]) }} aria-pressed={crop === 'banana'}>
                         <img src={photos.banana} alt="" /><span className="crop-meta"><strong>{t.banana}</strong><small>Banana</small></span>
                         {crop === 'banana' && <span className="crop-check"><Icon name="check" size={14} /></span>}
                       </button>
-                      <button className={`crop-option ${crop === 'cacao' ? 'selected' : ''}`} onClick={() => setCrop('cacao')} aria-pressed={crop === 'cacao'}>
+                      <button className={`crop-option ${crop === 'cacao' ? 'selected' : ''}`} disabled={loading} onClick={() => { setCrop('cacao'); setActiveSample(samples[2]) }} aria-pressed={crop === 'cacao'}>
                         <img src={photos.cacao} alt="" /><span className="crop-meta"><strong>{t.cacao}</strong><small>Theobroma cacao</small></span>
                         {crop === 'cacao' && <span className="crop-check"><Icon name="check" size={14} /></span>}
                       </button>
                     </div>
                     <div className="upload-divider"><span>02</span><p>{t.uploadStep}</p></div>
                     <div className="upload-actions">
-                      <button className="button-primary" onClick={startPhotoFlow}><Icon name="camera" size={20} />{t.takePhoto}<Icon name="arrow" size={17} /></button>
-                      <button className="button-secondary" onClick={() => fileInput.current?.click()}><Icon name="image" size={19} />{t.choosePhoto}</button>
+                      <button className="button-primary" disabled={loading} onClick={startPhotoFlow}><Icon name="camera" size={20} />{t.takePhoto}<Icon name="arrow" size={17} /></button>
+                      <button className="button-secondary" disabled={loading} onClick={() => fileInput.current?.click()}><Icon name="image" size={19} />{t.choosePhoto}</button>
                     </div>
                     <p className="photo-tip"><Icon name="check" size={15} />{t.photoTip}</p>
-                    <button className="sample-link" onClick={() => startPhotoFlow()}>{t.analyze} <Icon name="arrow" size={14} /></button>
+                    <div className="wired-samples"><p>Try a sample · SAMPLE results, no API call</p>
+                      {samples.map(sample => <button key={sample.id} className="button-secondary" disabled={loading} onClick={() => selectSample(sample)}>{sample.label}</button>)}
+                      <label>Demo backup case<select aria-label="Demo backup case" value={activeSample.id} disabled={loading} onChange={event => setActiveSample(samples.find(sample => sample.id === event.target.value))}>{samples.map(sample => <option key={sample.id} value={sample.id}>{sample.label}</option>)}</select></label>
+                      <small>On error or after 15 seconds, the selected sample is shown. It is not a diagnosis of your photo.</small>
+                    </div>
                   </section>
 
                   <div className="tip-strip"><span className="tip-icon"><Icon name="help" size={18} /></span><p><strong>{t.goodPhoto}</strong> {t.photoHelp}</p></div>
@@ -435,51 +436,39 @@ function App() {
 
           {page === 'result' && (
             <section className="content-page result-page">
-              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{t.analysisDemo}</p></div>
+              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? 'AI guidance · not confirmed' : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={`Sample nga hulagway sa ${t[crop]}`} /><span className="photo-badge"><Icon name="image" size={14} /> Sample nga hulagway</span></div>
-                  <div className="photo-details"><span><Icon name="plant" size={16} />{t[crop]}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
-                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>Timan-i: sample nga prediction kini.</strong> Dili pa konektado ang AI sa prototype. Dili kini kumpirmadong diagnosis.</p></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? 'Uploaded plant photo' : 'Sample illustration'} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? 'Uploaded photo' : 'SAMPLE illustration'}</span></div>
+                  <div className="photo-details"><span><Icon name="plant" size={16} />{result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
+                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? 'AI guidance, not a confirmed diagnosis.' : 'SAMPLE result, not a diagnosis of your photo.'}</strong> This is a decision aid, not a lab diagnosis.</p></div>
                 </div>
                 <div className="result-right">
                   <div className="diagnosis-card">
-                    <div className="diagnosis-overline"><span className="diagnosis-dot" /> {t.diseaseLabel} <span className="demo-tag">DEMO</span></div>
+                    <div className="diagnosis-overline"><span className="diagnosis-dot" /> {t.diseaseLabel} <span className="demo-tag">{outcome?.source === 'live' ? 'AI' : 'SAMPLE'}</span></div>
                     <h2>{disease}</h2>
-                    <p className="disease-local">{crop === 'banana' ? 'Sigatoka sa saging' : 'Itom nga pagkadunot sa bunga sa cacao'}</p>
-                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}%</strong></div>
-                    <div className="confidence-track"><span style={{ width: `${confidence}%` }} /></div>
-                    <p className="confidence-note">{t.confidenceNote}</p>
+                    <p className="disease-local">{result?.problemNameLocal}</p>
+                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}</strong></div>
+                    <p className="confidence-note">Crop: {result?.crop} · Severity: {result?.severity}</p>
+                    {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">We're not sure. {t.expertRecommendation}</p>}
                   </div>
                   <div className="recommendation-heading"><div><span className="step-label">{t.nextSteps}</span><h2>{t.nextStepsTitle}</h2></div><Icon name="leaf" size={21} /></div>
-                  <div className="recommendations">{localizedRecommendations[crop].map(([title, text], index) => (
+                  <div className="recommendations">{localizedRecommendations.map(([title, text], index) => (
                     <article className="recommendation" key={title}>
                       <span className="rec-number">0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div>
                     </article>
                   ))}</div>
+                  <p className="wired-message"><strong>When to call an expert:</strong> {result?.whenToCallExpert}</p>
                   <button className="button-primary report-button" onClick={() => setPage('report')}><Icon name="image" size={19} />{t.report}<Icon name="arrow" size={17} /></button>
                 </div>
               </div>
             </section>
           )}
 
-          {page === 'report' && (
+          {page === 'report' && outcome && (
             <section className="content-page report-page">
-              <div className="page-heading"><span className="step-label">ALANG SA PAGPAAMBIT</span><h1>{t.reportTitle}</h1><p>Tan-awa ang detalye sa dili pa ipaambit.</p></div>
-              <div className="report-sheet">
-                <div className="report-banner"><span className="brand-mark"><Icon name="leaf" size={23} /></span><div><strong>Bisaya Crop Doctor</strong><small>{t.reportSubtitle}</small></div><span className="report-status">DRAFT</span></div>
-                <div className="report-top">
-                  <img src={photo || photos[crop]} alt={`Sample nga hulagway sa ${t[crop]}`} />
-                  <div className="report-diagnosis"><span className="step-label">POSIBLENG SAKIT · DEMO</span><h2>{disease}</h2><p>{t[crop]} <span>·</span> {confidence}% confidence</p></div>
-                </div>
-                <div className="report-meta">
-                  <div><span>{t.reportDate}</span><strong>{new Date().toLocaleString('en-PH')}</strong></div>
-                  <label><span><Icon name="pin" size={15} /> {t.reportLocation} <small>(opsyonal)</small></span><input value={location} onChange={(event) => setLocation(event.target.value)} placeholder={t.reportLocationPlaceholder} /></label>
-                </div>
-                <div className="report-steps"><h3>{t.reportSteps}</h3>{localizedRecommendations[crop].map(([title, text], index) => <div className="report-step" key={title}><span>{index + 1}</span><div><strong>{title}</strong><p>{text}</p></div></div>)}</div>
-                <p className="report-disclaimer">{t.reportDisclaimer}</p>
-                <div className="report-actions"><button className="button-primary" onClick={shareReport}><Icon name="share" size={19} />{t.share}</button><button className="button-secondary" onClick={downloadReport}><Icon name="download" size={18} />{t.saveReport}</button></div>
-              </div>
+              <div className="page-heading"><h1>{t.reportTitle}</h1></div>
+              <ShareReport key={`${outcome.date}-${language}`} outcome={outcome} />
             </section>
           )}
 
@@ -490,7 +479,7 @@ function App() {
                 <span className="step-label">OFFLINE NGA KAHIMTANG</span>
                 <h1>{t.offlineTitle}</h1><p>{t.offlineText}</p>
                 <div className="offline-truth"><Icon name="help" size={17} /><span>{t.offlineTruth}</span></div>
-                <button className="button-secondary offline-choose" onClick={() => fileInput.current?.click()}><Icon name="image" size={18} />{t.choosePhoto}</button>
+                <button className="button-secondary offline-choose" disabled={loading} onClick={() => fileInput.current?.click()}><Icon name="image" size={18} />{t.choosePhoto}</button>
                 <button className="button-primary" onClick={saveOfflinePhoto}><Icon name="download" size={19} />{t.savePhoto}</button>
                 {savedPhotos.length > 0 && <button className="button-text" onClick={() => setPage('saved')}>Tan-awa ang mga na-save nga litrato <Icon name="arrow" size={15} /></button>}
               </div>
