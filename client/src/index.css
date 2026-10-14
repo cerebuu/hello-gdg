@@ -50,7 +50,7 @@ button:disabled { cursor: not-allowed; opacity: .53; }
 .hero-photo { z-index: -2; object-fit: cover; object-position: center 55%; }
 .hero-overlay { z-index: -1; background: linear-gradient(90deg, rgba(17, 48, 31, .91) 0%, rgba(23, 57, 34, .80) 42%, rgba(28, 61, 35, .12) 100%), linear-gradient(0deg, #142d21a6, transparent 45%); }
 .hero-art { position: absolute; z-index: 0; right: 145px; bottom: -2px; width: 230px; height: 215px; filter: drop-shadow(0 8px 10px #172c1d28); }
-.hero-content { position: relative; z-index: 1; max-width: 600px; padding: 32px 38px 31px; }
+.hero-content { position: relative; z-index: 1; max-width: min(52%, 600px); padding: 32px 38px 31px; }
 .eyebrow { display: flex; align-items: center; gap: 7px; color: #d5e4d0; font-size: 11px; font-weight: 600; letter-spacing: .35px; }
 .hero-content h1 { max-width: 430px; margin: 15px 0 8px; font: 800 clamp(28px, 4vw, 38px)/1.15 Manrope, sans-serif; letter-spacing: -1.2px; }
 .hero-content p { max-width: 430px; margin: 0; color: #e2eade; font-size: 14px; line-height: 1.65; }
@@ -263,7 +263,7 @@ button:disabled { cursor: not-allowed; opacity: .53; }
   .connection-pill { padding: 7px 8px; gap: 5px; font-size: 10px; }
   .main-layout { padding: 17px 14px 30px; }
   .hero-card { min-height: 242px; border-radius: 15px; }
-  .hero-content { padding: 27px 22px; }
+  .hero-content { max-width: 72%; padding: 27px 22px; }
   .hero-content h1 { max-width: 330px; font-size: 30px; }
   .hero-content p { max-width: 340px; font-size: 12px; }
   .hero-art { display: none; }
@@ -289,6 +289,8 @@ button:disabled { cursor: not-allowed; opacity: .53; }
   .report-sheet { padding: 16px; }
 }
 @media (max-width: 410px) {
+  .hero-content { max-width: 100%; padding: 25px 22px; }
+  .hero-art { opacity: .2; right: -35px; }
   .brand-copy small { max-width: 130px; }
   .brand { gap: 8px; }
   .topbar-inner { padding: 0 11px; }
@@ -319,6 +321,11 @@ button:disabled { cursor: not-allowed; opacity: .53; }
 /* Existing API flow, displayed within Szi's presentation. */
 .wired-disclaimer, .wired-message, .wired-error { padding: 12px 15px; border-radius: 10px; font-size: 14px; line-height: 1.6; }
 .wired-disclaimer, .wired-message { background: #fff8e9; border: 1px solid #eddcb8; color: #715628; }
+.loading-message { display: flex; align-items: center; gap: 8px; }
+.spinner { width: 15px; height: 15px; border: 2px solid #c8dcc5; border-top-color: #39784a; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.slow-message { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -5px 0 14px; padding: 10px 12px; border: 1px solid #eadbb9; border-radius: 10px; background: #fff8e9; color: #795f31; font-size: 12px; }
+.slow-message .button-secondary { min-height: 44px; flex: none; padding: 9px 12px; }
 .wired-error { background: #fff0ed; color: #8d3426; border: 1px solid #e6baaf; }
 .wired-samples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 .wired-samples p, .wired-samples label, .wired-samples small { width: 100%; }
