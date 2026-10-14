@@ -171,3 +171,81 @@ Change the privately managed model value as above; it was deliberately not edite
 Review Bisaya/Filipino text with native speakers and guidance with an agriculture
 expert. Check real-phone camera capture, OS clipboard permissions, and physical
 printing. Real crop photographs and diagnosis accuracy also need review.
+
+
+## Knowledge base and second opinion
+
+14 October 2026, feature/knowledge-detector. Server-only worktree; client untouched.
+GEMINI_API_KEY: set. GEMINI_MODEL: set. ROBOFLOW_API_KEY: missing.
+No credential values logged; .env was read at runtime only and not edited.
+
+The allowed source pages list the seven requested classes but no concrete visual
+symptoms. All visibleSymptoms arrays are empty; missing facts are documented in
+FACTS_TO_SOURCE.md. Only names are passed as candidates, not evidence. Gemini
+retains its caution, unknown/non-plant, language, no-brand and no-dosage rules.
+
+### Live HTTP cases
+
+Inputs were temporary synthetic PNG illustrations, not disease photographs.
+These checks prove request/response handling, not disease-identification accuracy.
+
+| Case | Result | HTTP | Latency | Contract |
+| --- | --- | --- | --- | --- |
+| Banana illustration, Bisaya | PASS | 200 | 2118 ms | PASS diagnosis |
+| Same banana illustration, Filipino | PASS | 200 | 2083 ms | PASS diagnosis |
+| Cacao illustration | PASS | 200 | 1910 ms | PASS diagnosis |
+| Non-plant illustration | PASS | 200 | 1682 ms | PASS diagnosis |
+| Over 5 MiB | PASS | 400 | 42 ms | PASS JSON error |
+| Malformed JSON | PASS | 400 | 3 ms | PASS JSON error |
+| Notes without photo (unsupported) | PASS | 400 | 2 ms | PASS JSON error |
+| Missing Gemini key in isolated subprocess | PASS | 500 | 7 ms | PASS JSON error |
+| Missing Roboflow key | PASS | 200 | 1996 ms typical | Live a–d return secondOpinion null; unit test confirms no network call |
+| Simulated Roboflow timeout + real Gemini | PASS | 200 | 2113 ms | Valid diagnosis; optional opinion null, no main-response failure |
+
+Typical live image latency: 1996 ms, below the approximate 4-second goal.
+No prompt trimming was necessary. Synthetic banana/cacao illustrations prompted
+unknown/Low or non-plant responses, so knowledgeMatch null was correct. Single-name
+matching and real ready-opinion response shapes are covered by deterministic tests.
+
+### Deterministic checks
+
+21 tests passed. Coverage includes old response compatibility, seven empty-symptom
+source entries, conservative non-negated single-name matching, malformed optional
+fields, candidate prompt text, missing detector key, Authorization header transport
+with no credentials in URL, junk-class exclusion, 0.5 confidence cutoff, highest
+eligible prediction, provider/JSON failure, cancellation, no main-response waiting,
+cacao/non-plant output suppression, and localized disagreement advice. Advice also
+appears in whenToCallExpert for the unchanged client.
+
+The default hard three-second detector timeout was tested with stalled body
+parsing: null and an aborted signal at about 3003 ms. A live Gemini HTTP test used
+a simulated detector stall with a shortened 200 ms test deadline; Gemini still
+returned a valid 200 in 2113 ms. This is fault injection, not a claim
+that a real Roboflow server was successfully called.
+
+### Safety and human review
+
+All a–d live responses were scanned for a finite list of brands, dosage patterns,
+and certainty words and manually read. No branded chemical, dosage, or confirmed
+claim was found. Null knowledge match is preferable to guessing. No model or dataset
+performance figure is claimed as app accuracy.
+
+Real hosted Roboflow inference: FAIL / unverified because ROBOFLOW_API_KEY is missing.
+Its protocol and filtering are tested with injected transport; credentials, model
+access, provider availability, field-photo reliability, disagreement wording, and
+native Bisaya/Filipino review still require human verification. Symptom descriptions
+need approved agriculture sources before adding facts. Camera, clipboard, and print
+checks remain unchanged from the previous report.
+
+### Compatibility and privacy
+
+The request contract is unchanged, so a crop cannot be known before Gemini returns.
+When enabled, Roboflow runs in parallel on the photo and only banana output is
+retained. README and docs disclose this extra photo destination. A ready result
+may be used; a pending result is discarded and cancelled when Gemini finishes.
+There is no detector wait, URL-key fallback, or new dependency. Old responses without
+the optional fields pass validation. Optional errors preserve the main guidance.
+
+Reproduce unit tests: npm run test --prefix server. Runtime-only live fault check:
+node --env-file=.env server/scripts/verify-detector-timeout.js /path/to/test.png
+No images, .env, or node_modules were added to Git.

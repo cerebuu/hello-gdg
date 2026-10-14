@@ -107,3 +107,11 @@ node server/scripts/test-diagnose.js
 See [docs/TEST_REPORT.md](docs/TEST_REPORT.md) for phone-width flow checks and
 remaining limitations. Browser checks use headless Chrome via its built-in
 DevTools protocol and add no test library.
+
+
+## Knowledge and detector credits
+
+- [Roboflow banana-leaf-disease dataset by LUIS MANUEL](https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9), listed as Public Domain. Candidate names and optional hosted /1 detector reference only; no images were copied into the repository.
+- [Br-Al/Cocoa-diseases](https://github.com/Br-Al/Cocoa-diseases), reference for cacao category names only; no code or images copied.
+
+Photos may also be sent to Roboflow when ROBOFLOW_API_KEY is set.

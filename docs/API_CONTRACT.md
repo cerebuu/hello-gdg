@@ -73,3 +73,41 @@ For an API error or a 15-second timeout, the client displays the user's selected
 backup case as an offline demo, not as an inferred match or diagnosis of the
 uploaded photo. The response contract stays unchanged; provenance is tracked
 separately by the UI. A fallback report uses the sample illustration.
+
+
+## Optional knowledge and detector metadata
+
+Older responses without these fields still pass the validator:
+
+```ts
+{
+  knowledgeMatch?: { id: string, name: string } | null,
+  secondOpinion?: {
+    source: "roboflow",
+    crop: "banana",
+    label: "healthy" | "sigatoka" | "cordana" | "pestalotiopsis",
+    confidence: number // finite, 0.5 through 1 inclusive
+  } | null,
+  note?: string | null
+}
+```
+
+The server returns these fields with null when no reliable mapping or optional
+result is available. A knowledge match must be one single non-negated English
+condition name for the same crop, with an exact stored id/name. Multiple candidate
+names, unknown crop, and non-plant results have no match. This mapping is not proof
+that a diagnosis is correct. No symptom facts are invented from class names.
+
+The optional detector starts in parallel only when its runtime key is set, has a
+hard three-second bound, and is cancelled when Gemini finishes. The response never
+waits for it: only an already-ready prediction is used. Missing key, provider
+failure, timeout, junk/unsupported class, confidence below 0.5, non-banana Gemini
+result, and non-plant result produce null. The original request has no crop hint;
+therefore configured requests may send a photo to Roboflow before Gemini determines
+its crop. Only banana output is retained. Credentials use Authorization header
+transport and are never put in the request URL or logs.
+
+If both checks clearly identify different candidates, note asks for an agriculture
+officer in the requested language. It is also appended to whenToCallExpert so the
+unchanged existing client can display it. Neither source confirms a diagnosis.
+The client need not render the optional metadata to keep its existing flow working.
