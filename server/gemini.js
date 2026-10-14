@@ -118,9 +118,13 @@ export function createGeminiDiagnoser({
           parts: [
             {
               text: [
-                'Assess the crop shown in this image as a cautious agricultural decision aid.',
+                'Inspect the supplied image itself before answering; do not answer from a default example or from the text of this prompt.',
+                'Assess only what is visibly supported by this image as a cautious agricultural decision aid.',
+                'First distinguish whether the image shows a real banana or cacao plant, another plant, a non-plant, or an unclear/placeholder image.',
+                'Compare the visible pattern, color, location, and extent of damage against plausible problems. Do not default to leaf spot or any other common problem when those features are not visible.',
+                'If the image is a sample illustration, screenshot, blank image, blurry image, or otherwise does not support a specific finding, use crop "unknown", confidence "Low", and say that the image is unclear in the requested language.',
                 `Write problemNameLocal, each action step, and whenToCallExpert in ${localizedLanguage[language]}.`,
-                'Do not claim certainty or invent evidence that is not visible. If the image is unclear, the crop is not banana or cacao, or the issue cannot be assessed, use crop "unknown", confidence "Low", and appropriately cautious guidance. Use severity "Unknown" whenever severity cannot be assessed.',
+                'Do not claim certainty or invent evidence that is not visible. If the crop is not banana or cacao, or the issue cannot be assessed, use crop "unknown", confidence "Low", and appropriately cautious guidance. Use severity "Unknown" whenever severity cannot be assessed.',
                 'If the image does not depict a plant, set notAPlant to true, crop to "unknown", severity to "Unknown", and explain that in both problem-name fields and the expert guidance.',
                 'Do not recommend pesticide products, application rates, or other hazardous chemical use. Suggest safe observation and consultation with a local agricultural technician when uncertain.',
                 'Return only the requested structured result.',

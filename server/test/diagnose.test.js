@@ -144,6 +144,8 @@ test('Gemini service requests structured localized output and validates it', asy
   assert.equal(request.model, 'test-model')
   assert.equal(request.config.responseMimeType, 'application/json')
   assert.equal(request.contents[0].parts[0].text.includes('Filipino'), true)
+  assert.equal(request.contents[0].parts[0].text.includes('Inspect the supplied image itself'), true)
+  assert.equal(request.contents[0].parts[0].text.includes('Do not default to leaf spot'), true)
   assert.equal(request.contents[0].parts[1].inlineData.data, Buffer.from('image').toString('base64'))
 })
 
