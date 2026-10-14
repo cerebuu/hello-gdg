@@ -105,8 +105,8 @@ test('POST /api/diagnose reports provider failures', async () => {
     })
 
     assert.equal(response.status, 500)
-    assert.deepEqual(await response.json(), { error: 'Diagnosis failed' })
-    assert.match(errors[0][1].message, /provider detail/)
+    assert.deepEqual(await response.json(), { error: 'Diagnosis failed. Please try again or contact your agriculture office.' })
+    assert.deepEqual(errors[0], ['Diagnosis request failed'])
   })
 })
 
@@ -149,6 +149,7 @@ test('Gemini service requests structured localized output and validates it', asy
 
 test('Gemini service rejects invalid structured output and missing credentials', async () => {
   const malformedDiagnoser = createGeminiDiagnoser({
+    model: 'test-model',
     client: {
       models: {
         generateContent: async () => ({

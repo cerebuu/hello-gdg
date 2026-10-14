@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { diagnoseWithGemini } from './gemini.js'
 
-const MAX_IMAGE_BYTES = 10 * 1024 * 1024
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_BYTES / 3) * 4
 const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
 
@@ -16,7 +16,7 @@ function parseDiagnosisRequest(body) {
   }
 
   if (body.imageBase64.length > MAX_BASE64_LENGTH) {
-    return { error: 'Image must be 10 MB or smaller' }
+    return { error: 'Image must be 5 MB or smaller' }
   }
 
   if (
@@ -34,7 +34,7 @@ function parseDiagnosisRequest(body) {
     imageBytes.length > MAX_IMAGE_BYTES ||
     imageBytes.toString('base64') !== body.imageBase64
   ) {
-    return { error: 'Image must contain valid base64 data and be 10 MB or smaller' }
+    return { error: 'Image must contain valid base64 data and be 5 MB or smaller' }
   }
 
   if (!ALLOWED_MIME_TYPES.has(body.mimeType)) {
@@ -52,7 +52,7 @@ export function createApp({ diagnose = diagnoseWithGemini, logger = console } = 
   const app = express()
 
   app.use(cors({ origin: 'http://localhost:5173' }))
-  app.use(express.json({ limit: '14mb' }))
+  app.use(express.json({ limit: '8mb' }))
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' })
@@ -66,8 +66,8 @@ export function createApp({ diagnose = diagnoseWithGemini, logger = console } = 
       const result = await diagnose(parsed)
       return res.status(200).json(result)
     } catch (error) {
-      logger.error('Diagnosis request failed:', error)
-      return res.status(500).json({ error: 'Diagnosis failed' })
+      logger.error('Diagnosis request failed')
+      return res.status(500).json({ error: error.safeMessage || 'Diagnosis failed. Please try again or contact your agriculture office.' })
     }
   })
 
@@ -75,14 +75,14 @@ export function createApp({ diagnose = diagnoseWithGemini, logger = console } = 
     if (res.headersSent) return next(error)
 
     if (error?.type === 'entity.too.large') {
-      return res.status(413).json({ error: 'Request body is too large; images must be 10 MB or smaller' })
+      return res.status(400).json({ error: 'Request body is too large; images must be 5 MB or smaller' })
     }
 
     if (error?.type === 'entity.parse.failed') {
       return res.status(400).json({ error: 'Request body must be valid JSON' })
     }
 
-    logger.error('Request processing failed:', error)
+    logger.error('Request processing failed')
     return res.status(500).json({ error: 'Request failed' })
   })
 
