@@ -3,9 +3,8 @@
 ## 1. How accurate is it?
 
 There is no measured field accuracy for this app. It gives possible guidance,
-not confirmation. Future detector checks may use trained public models as a
-second check, but that is not an accuracy claim and still needs expert-reviewed
-evaluation on consented field photos.
+not confirmation. Detector checks and second opinions are roadmap items, not
+verified features of the current deployment.
 
 ## 2. Why use Gemini?
 
@@ -23,10 +22,9 @@ opinion.
 ## 4. What happens to a farmer’s photo?
 
 In live mode, the submitted image goes to Google through our server for Gemini.
-If a Roboflow detector key is configured in a future deployment, the image may
-also go to Roboflow. The API key stays server-side. We need a clear retention
-and consent policy before production. Farmers should not upload private images
-without consent.
+No Roboflow detector is part of the current verified deployment. The API key
+stays server-side. We need a clear retention and consent policy before
+production. Farmers should not upload private images without consent.
 
 ## 5. Is it really offline?
 
@@ -76,16 +74,16 @@ review, and evaluation. We have not demonstrated production scale.
 
 ## 13. What data trained this app?
 
-The project credits a public-domain Roboflow banana-leaf-disease dataset by
-LUIS MANUEL and the Br-Al/Cocoa-diseases repository as references. These
-references do not establish the app’s accuracy. The current prototype uses
-Gemini rather than claiming to have trained its own detector.
+The project documentation includes public dataset references, but none is a
+verified detector in the current app. These references do not establish the
+app’s accuracy. The current prototype uses Gemini rather than claiming to have
+trained its own detector.
 
 ## 16. Why not train our own model?
 
 Training our own model needs time, representative labeled data, and evaluation
-we do not yet have. We use public models and references while keeping a trained
-detector as a possible second check, not as proof of diagnosis.
+we do not yet have. We use Gemini for the current live flow; a trained
+detector as a second check is a future, unverified roadmap item.
 
 ## 14. What if the photo is not a plant or is unclear?
 
@@ -98,3 +96,4 @@ an agriculture professional.
 We need consented field photos, native-speaker review, qualified agriculture
 review, and a transparent evaluation plan. The next product step is a
 source-backed knowledge base plus a trained detector as a second opinion.
+Neither is verified in the current deployment.

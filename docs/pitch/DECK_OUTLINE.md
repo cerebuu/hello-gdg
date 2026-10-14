@@ -21,7 +21,7 @@ numbers or measured losses.
 ## Slide 3 — The product
 
 - Mobile-first flow for banana and cacao.
-- Bisaya or Filipino guidance.
+- Bisaya or Filipino guidance from the live Gemini flow.
 - Actions, escalation, copy, and printable farmer card.
 
 **Speaker note:** Show the home screen and the language choice. Emphasize the
@@ -58,12 +58,13 @@ disclaimer and the need for expert and native-speaker review.
 
 - Live mode needs internet; language and crop guidance need review.
 - Testing so far is on limited photos.
-- Roadmap: source-backed knowledge, trained detector second checks, more crops
-  and dialects, extension-officer review.
+- Roadmap: source-backed knowledge, Roboflow or other trained detector second
+  checks, more crops and dialects, extension-officer review.
 
 **Speaker note:** Confidence comes from naming the limits. Do not present an
 accuracy percentage. Detector checks and the knowledge base are next
-integrations for the server, not measured claims about the current deployment.
+integrations for the server, not verified features or measured claims about
+the current deployment.
 
 ## Slide 8 — The ask
 
