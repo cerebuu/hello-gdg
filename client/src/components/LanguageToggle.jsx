@@ -1,0 +1,8 @@
+export default function LanguageToggle() {
+  return (
+    <section className="rounded-lg border border-dashed border-stone-300 bg-white p-5">
+      <h2 className="font-medium">LanguageToggle (Bisaya / Filipino)</h2>
+      <p className="mt-1 text-sm text-stone-500">Placeholder</p>
+    </section>
+  )
+}
