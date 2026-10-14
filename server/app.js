@@ -45,7 +45,7 @@ function parseDiagnosisRequest(body) {
     return { error: 'mime' }
   }
 
-  if (!['bisaya', 'filipino'].includes(body.language)) {
+  if (!['bisaya', 'filipino', 'english'].includes(body.language)) {
     return { error: 'language' }
   }
 

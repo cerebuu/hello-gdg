@@ -70,7 +70,7 @@ test('POST /api/diagnose rejects invalid fields before invoking Gemini', async (
     const invalidRequests = [
       { imageBase64: 'not base64', mimeType: 'image/jpeg', language: 'bisaya' },
       { imageBase64: 'dGVzdA==', mimeType: 'image/gif', language: 'bisaya' },
-      { imageBase64: 'dGVzdA==', mimeType: 'image/jpeg', language: 'english' },
+      { imageBase64: 'dGVzdA==', mimeType: 'image/jpeg', language: 'spanish' },
     ]
 
     for (const body of invalidRequests) {

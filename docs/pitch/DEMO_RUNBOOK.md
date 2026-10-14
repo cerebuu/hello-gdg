@@ -2,7 +2,9 @@
 
 ## Before the demo
 
-1. Open the app at `http://localhost:5173`.
+1. On the laptop, open the app at `http://localhost:5173`. For a phone on the
+   same Wi-Fi, open `http://<laptop-ip>:5173` in the phone browser. Replace
+   `<laptop-ip>` with the laptop's local network address.
 2. Confirm the home screen shows **Bisaya Crop Doctor** and the disclaimer:
    “This is a decision aid, not a lab diagnosis.”
 3. Keep one banana leaf photo ready in the file picker. Use a clear, well-lit
@@ -37,7 +39,7 @@ of the uploaded photo.”
 
 ## Failure fallbacks
 
-### Live mode is slow
+### Live mode is slow or the server returns an error
 
 If the result has not appeared after the normal wait, do not keep the audience
 waiting. Tap the sample/demo control and choose the banana leaf sample.

@@ -46,6 +46,7 @@ const diagnosisSchema = {
 const localizedLanguage = {
   bisaya: 'Bisaya (Cebuano)',
   filipino: 'Filipino',
+  english: 'English',
 }
 
 function isNonEmptyString(value) {

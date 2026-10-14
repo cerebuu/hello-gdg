@@ -10,13 +10,16 @@
 - Current coverage is focused on banana and cacao.
 - Sample mode is a demo fallback. It does not infer a result for an uploaded
   photo.
+- The current server path uses Gemini live guidance; trained detector checks
+  are an optional next integration, not a measured second opinion in this
+  shipped deployment.
 - An agriculture professional remains important for uncertain, severe, or
   unusual cases.
 
 ## Roadmap
 
 1. Build a reviewed knowledge base from trusted agriculture sources.
-2. Add a trained detector as a second opinion, with clear uncertainty.
+2. Add trained detector checks as a second opinion, with clear uncertainty.
 3. Support more crops and more local dialects.
 4. Add extension-officer review and feedback into the product workflow.
 5. Replace demo-only material with consented, licensed field photos and

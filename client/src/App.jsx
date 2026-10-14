@@ -9,7 +9,7 @@ import { optionalSampleData } from './optionalSampleData.js'
 function sampleResult(sample, language) {
   const optional = optionalSampleData[sample.id]
   return {
-    ...sample.results[language],
+    ...(sample.results[language] || sample.results.filipino),
     ...(optional || {}),
     ...(optional?.note ? { note: optional.note[language] } : {}),
   }
@@ -56,6 +56,9 @@ const copy = {
     supportText: 'Kon nagkadaghan ang sakit o dili ka sigurado sa resulta, pangayo og tabang sa agricultural technician sa inyong barangay.',
     backHome: 'Balik sa Home',
     analyzing: 'Gisusi ang litrato…',
+    analyzingLong: 'Dugay gamay ang pagsusi.',
+    useSample: 'Gamita ang sample',
+    offlineFriendly: 'Dili nahuman ang live nga pagsusi. Gipakita ang sample nga demo.',
     analyze: 'Tan-awa ang sample nga resulta',
     startHere: 'SUGOD DINHI',
     uploadStep: 'I-upload o kuhaa ang hulagway',
@@ -124,6 +127,9 @@ const copy = {
     supportText: 'Kung lumalala ang sakit o hindi ka sigurado sa resulta, humingi ng tulong sa agricultural technician sa inyong barangay.',
     backHome: 'Bumalik sa Home',
     analyzing: 'Sinusuri ang larawan…',
+    analyzingLong: 'Medyo matagal ang pagsusuri.',
+    useSample: 'Gamitin ang sample',
+    offlineFriendly: 'Hindi natapos ang live na pagsusuri. Ipinapakita ang sample na demo.',
     analyze: 'Tingnan ang sample na resulta',
     startHere: 'MAGSIMULA DITO',
     uploadStep: 'Mag-upload o kumuha ng larawan',
@@ -158,6 +164,72 @@ const copy = {
     expertRecommendation: 'Kumonsulta sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Halimbawa: Davao del Sur',
   },
+  english: {
+    subtitle: 'Help identifying plant diseases',
+    welcome: 'Let’s care for your crops!',
+    intro: 'Upload a photo of a leaf or fruit to check for possible disease.',
+    chooseCrop: 'Choose your crop',
+    takePhoto: 'Take a Photo',
+    choosePhoto: 'Choose a Photo',
+    photoTip: 'Take a clear photo of the affected area in good light.',
+    supported: 'Supported crops',
+    banana: 'Banana',
+    cacao: 'Cacao',
+    online: 'Online',
+    offline: 'Offline',
+    saved: 'saved',
+    home: 'Home',
+    savedPhotos: 'Saved Photos',
+    help: 'Help',
+    result: 'Analysis Result',
+    report: 'Generate Report',
+    offlineTitle: 'No internet connection',
+    offlineText: 'Online disease analysis is temporarily unavailable. Save the photo and submit it when your connection returns.',
+    savePhoto: 'Save photo on this device',
+    retry: 'Retry submission',
+    savedTitle: 'Saved photos',
+    emptySaved: 'No photos saved yet.',
+    reportTitle: 'Report Preview',
+    helpTitle: 'We’re here to help',
+    helpText: 'Bisaya Crop Doctor helps identify possible diseases in banana and cacao. It does not replace expert advice.',
+    supportTitle: 'When to ask an expert',
+    supportText: 'If the disease is spreading or you are unsure about the result, contact your local agricultural technician.',
+    backHome: 'Back to Home',
+    analyzing: 'Analyzing photo…',
+    analyzingLong: 'The analysis is taking a little longer.',
+    useSample: 'Use a sample instead',
+    offlineFriendly: 'Live analysis did not finish. Showing the sample demo.',
+    analyze: 'View sample result',
+    startHere: 'START HERE',
+    uploadStep: 'Upload or take a photo',
+    goodPhoto: 'A clear photo makes a better guide.',
+    photoHelp: 'Photograph the affected leaf or fruit up close so the signs are easy to see.',
+    farmRegion: 'Davao Region · Here for our farmers',
+    farmCredit: 'Made for farmers in Davao',
+    readyTitle: 'Ready to check',
+    readyText: 'The photo will be submitted for possible guidance.',
+    plantsDescription: 'Two crops grown in our region',
+    plantParts: 'Leaves and fruit',
+    analysisDemo: 'Sample demonstration · Not a real AI diagnosis',
+    diseaseLabel: 'POSSIBLE DISEASE',
+    nextSteps: 'RECOMMENDED NEXT STEPS',
+    nextStepsTitle: 'What should you do?',
+    aiConfidence: 'AI confidence',
+    confidenceNote: 'Sample confidence for demonstration',
+    reportTitle: 'Report Preview',
+    reportLocation: 'Location',
+    expertRecommendation: 'Contact your local agricultural technician.',
+    reportLocationPlaceholder: 'For example: Davao del Sur',
+    queueTitle: 'Waiting for a connection',
+    noSavedPhotos: 'No photos waiting yet. Save a photo to add it to the queue.',
+    waiting: 'Pending',
+    waitingPhoto: 'Waiting to submit',
+    noDiagnosis: 'Not analyzed',
+    offlineTruth: 'Saving a photo does not produce an AI result. No diagnosis is available until the device reconnects.',
+    retryHint: 'You can retry when your connection returns.',
+    offlineQueueIntro: 'Photos saved while offline.',
+    emptySavedText: 'When offline, save a photo here to submit it later.',
+  },
 }
 
 function Icon({ name, size = 20, ...props }) {
@@ -189,6 +261,10 @@ function formatConfidence(value) {
   return `${Math.round(numeric <= 1 ? numeric * 100 : numeric)}%`
 }
 
+function displayConfidence(value, labels) {
+  return labels[value] || value
+}
+
 function Brand({ t, onHome }) {
   return (
     <button className="brand" onClick={onHome} aria-label="Bisaya Crop Doctor home">
@@ -212,6 +288,7 @@ function App() {
   const [result, setResult] = useState(null)
   const [outcome, setOutcome] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [slow, setSlow] = useState(false)
   const [error, setError] = useState('')
   const [activeSample, setActiveSample] = useState(samples[0])
   const pending = useRef(null)
@@ -221,7 +298,7 @@ function App() {
   const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}. ${t.nextStepsTitle}`, step]) : []
 
   useEffect(() => {
-    document.documentElement.lang = language === 'filipino' ? 'fil' : 'ceb'
+    document.documentElement.lang = language === 'filipino' ? 'fil' : language === 'english' ? 'en' : 'ceb'
   }, [language])
 
   function showNotice(message) {
@@ -230,6 +307,9 @@ function App() {
   }
 
   function selectSample(sample) {
+    pending.current?.abort()
+    setLoading(false)
+    setSlow(false)
     const nextResult = sampleResult(sample, language)
     setActiveSample(sample)
     setError('')
@@ -263,20 +343,21 @@ function App() {
     const controller = new AbortController()
     pending.current = controller
     const timer = setTimeout(() => controller.abort(), 15000)
+    const slowTimer = setTimeout(() => setSlow(true), 8000)
     try {
       if (!online) throw new Error('Live diagnosis unavailable. Showing a selected SAMPLE, not a diagnosis of your photo.')
       const next = await requestDiagnosis(input, language, controller.signal)
       setResult(next)
       setOutcome({ result: next, source: 'live', language, image: input.preview, date: new Date().toISOString() })
     } catch (problem) {
-      setError(problem.name === 'AbortError' ? 'The check took over 15 seconds.' : problem.message)
+      setError(t.offlineFriendly)
       setPhoto(backup.imagePath)
       const backupResult = sampleResult(backup, language)
       setResult(backupResult)
       setOutcome({ result: backupResult, sample: backup, source: 'offline', language,
         image: backup.imagePath, date: new Date().toISOString() })
     } finally {
-      clearTimeout(timer); pending.current = null; setLoading(false); setPage('result')
+      clearTimeout(timer); clearTimeout(slowTimer); pending.current = null; setLoading(false); setSlow(false); setPage('result')
     }
   }
 
@@ -287,7 +368,7 @@ function App() {
     setError('')
     setLoading(true)
     let prepared
-    try { prepared = await preparePhoto(file) }
+    try { prepared = await preparePhoto(file, language) }
     catch (problem) { setError(problem.message || 'Please choose another photo.'); setLoading(false); return }
     setLoading(false)
     await runAnalysis(crop, prepared.preview, prepared)
@@ -342,6 +423,9 @@ function App() {
 
   const disease = result?.problemNameEnglish || ''
   const confidence = result?.confidence || 'Low'
+  const displayChecks = result?.secondOpinions?.length
+    ? result.secondOpinions
+    : result?.secondOpinion ? [result.secondOpinion] : []
   const section = page === 'result' || page === 'report' || page === 'offline' ? 'home' : page
 
   return (
@@ -353,6 +437,7 @@ function App() {
             <div className="language-switch" aria-label="Pilia ang pinulongan">
               <button className={language === 'bisaya' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('bisaya')}>Bisaya</button>
               <button className={language === 'filipino' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('filipino')}>Filipino</button>
+              <button className={language === 'english' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('english')}>English</button>
             </div>
             <button className={`connection-pill ${online ? 'is-online' : 'is-offline'}`} onClick={toggleConnection} aria-label={online ? 'Switch to offline demo state' : 'Switch to online demo state'}>
               <Icon name={online ? 'wifi' : 'wifiOff'} size={16} />
@@ -361,13 +446,14 @@ function App() {
           </div>
         </div>
       </header>
-      <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled={loading} onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : 'Pilia ang hulagway sa tanom'} />
+      <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled={loading} onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : language === 'english' ? 'Choose a plant photo' : 'Pilia ang hulagway sa tanom'} />
 
       <input ref={cameraInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" disabled={loading} onChange={handleFile} aria-label="Take plant photo" />
       <main className="main-layout">
         <div className="page-wrap">
-          <p className="wired-disclaimer">This is a decision aid, not a lab diagnosis.</p>
-          {loading && <p className="wired-message" role="status">{t.analyzing}</p>}
+          <p className="wired-disclaimer">{optionalT.disclaimer}</p>
+          {loading && <p className="wired-message loading-message" role="status"><span className="spinner" />{t.analyzing}</p>}
+          {slow && loading && <div className="slow-message"><span>{t.analyzingLong}</span><button className="button-secondary" onClick={() => selectSample(activeSample)}>{t.useSample}</button></div>}
           {error && <p className="wired-error" role="alert">{error}</p>}
           {outcome?.source === 'offline' && <p className="wired-message">Offline demo mode · SAMPLE: {outcome.sample.label}. Not a diagnosis of your uploaded photo.</p>}
           {page !== 'home' && page !== 'saved' && page !== 'help' && (
@@ -457,12 +543,12 @@ function App() {
 
           {page === 'result' && (
             <section className="content-page result-page">
-              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? 'AI guidance · not confirmed' : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
+              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? optionalT.aiGuidance : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? 'Uploaded plant photo' : 'Sample illustration'} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? 'Uploaded photo' : 'SAMPLE illustration'}</span></div>
-                  <div className="photo-details"><span><Icon name="plant" size={16} />{result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
-                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? 'AI guidance, not a confirmed diagnosis.' : 'SAMPLE result, not a diagnosis of your photo.'}</strong> This is a decision aid, not a lab diagnosis.</p></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : optionalT.sampleIllustration}</span></div>
+                  <div className="photo-details"><span><Icon name="plant" size={16} />{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
+                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? optionalT.aiGuidance : optionalT.possibleResult}</strong> {optionalT.disclaimer}</p></div>
                 </div>
                 <div className="result-right">
                   <div className="diagnosis-card">
@@ -470,14 +556,16 @@ function App() {
                     <h2>{disease}</h2>
                     <p className="disease-local">{result?.problemNameLocal}</p>
                     {result?.knowledgeMatch && <p className="optional-known">{optionalT.knownCondition}: <strong>{result.knowledgeMatch.name}</strong></p>}
-                    {result?.secondOpinion && <div className="second-opinion">
-                      <span className="second-chip">{optionalT.secondCheck}: {result.secondOpinion.label} · {formatConfidence(result.secondOpinion.confidence)}</span>
+                    {displayChecks.length > 0 && <div className="second-opinion">
+                      <span className="second-chip">{optionalT.secondCheck}</span>
+                      <ul>{displayChecks.map((check, index) => <li key={`${check.source}-${check.model || check.label}-${index}`}>{check.label} · {formatConfidence(check.confidence)}</li>)}</ul>
                       <p>{optionalT.detectorNote}</p>
                     </div>}
-                    {result?.note && <p className="optional-note"><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
-                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}</strong></div>
-                    <p className="confidence-note">Crop: {result?.crop} · Severity: {result?.severity}</p>
-                    {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">We're not sure. {t.expertRecommendation}</p>}
+                    {result?.agreement === 'agree' && <span className="agreement-badge">{optionalT.checksAgree}</span>}
+                    {result?.agreement === 'differ' && result.note && <p className="optional-note"><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
+                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{displayConfidence(confidence, optionalT.confidenceLabels)}</strong></div>
+                    <p className="confidence-note">{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop} · {optionalT.severity}: {optionalT.severityLabels[result?.severity] || result?.severity}</p>
+                    {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">{optionalT.notSure} {optionalT.contactExpert}</p>}
                   </div>
                   <div className="recommendation-heading"><div><span className="step-label">{t.nextSteps}</span><h2>{t.nextStepsTitle}</h2></div><Icon name="leaf" size={21} /></div>
                   <div className="recommendations">{localizedRecommendations.map(([title, text], index) => (
@@ -485,7 +573,7 @@ function App() {
                       <span className="rec-number">0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div>
                     </article>
                   ))}</div>
-                  <p className="wired-message"><strong>When to call an expert:</strong> {result?.whenToCallExpert}</p>
+                  <p className="wired-message"><strong>{optionalT.whenToCallExpert}</strong> {result?.whenToCallExpert}</p>
                   <button className="button-primary report-button" onClick={() => setPage('report')}><Icon name="image" size={19} />{t.report}<Icon name="arrow" size={17} /></button>
                 </div>
               </div>

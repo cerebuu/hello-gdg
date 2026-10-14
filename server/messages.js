@@ -1,4 +1,12 @@
 const messages = {
+  english: {
+    object: 'A JSON object is required.', image: 'Please send a clear photo.', base64: 'The image data cannot be read. Choose another photo.',
+    size: 'The image exceeds 5 MB. Choose a smaller photo.', mime: 'Choose a JPEG, PNG, or WebP photo.', language: 'Choose Bisaya, Filipino, or English.',
+    json: 'The request could not be read. Please retry.', failed: 'The photo could not be checked. Retry or contact your agriculture office.',
+    missingKey: 'GEMINI_API_KEY is not configured. Use a sample for now.', missingModel: 'GEMINI_MODEL is not configured.',
+    timeout: 'The check took too long. Retry or use a sample.', low: 'We are not sure. Ask your local agriculture officer.',
+    differ: 'The checks differ. Ask your local agriculture officer.', detector: 'This possible condition was suggested by Roboflow; it is not a confirmed diagnosis.',
+  },
   bisaya: {
     object: 'Kinahanglan ang hustong datos sa hangyo.', image: 'Palihog pagpadala og klarong litrato.',
     base64: 'Dili mabasa ang datos sa litrato. Pagpili og laing litrato.', size: 'Sobra sa 5 MB ang litrato. Pagpili og mas gamay nga litrato.',
@@ -24,9 +32,10 @@ const messages = {
     detector: 'Posibleng kalagayan ito na iminungkahi ng Roboflow; hindi ito kumpirmadong sakit.',
   },
 }
-export const message = (code, language) => messages[language === 'filipino' ? 'filipino' : 'bisaya'][code] || messages.bisaya.failed
-export const possibleName = (name, language) => `${language === 'filipino' ? 'Posibleng' : 'Posibleng'} ${name}`
+export const message = (code, language) => messages[['bisaya', 'filipino', 'english'].includes(language) ? language : 'bisaya'][code] || messages.bisaya.failed
+export const possibleName = (name, language) => `${language === 'english' ? 'Possible' : 'Posibleng'} ${name}`
 export const localCondition = (id, language) => {
+  if (language === 'english') return null
   const names = {
     'banana-healthy': ['himsog tan-awon nga saging', 'malusog tingnang saging'],
     'banana-black-and-yellow-sigatoka': ['itom o dalag nga Sigatoka', 'itim o dilaw na Sigatoka'],
