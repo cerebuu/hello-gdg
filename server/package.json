@@ -1,0 +1,14 @@
+{
+  "name": "bisaya-crop-doctor-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=../.env index.js",
+    "start": "node --env-file-if-exists=../.env index.js"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "cors": "^2.8.6"
+  }
+}
