@@ -70,18 +70,22 @@ export function createApp({ diagnose = diagnoseWithGemini, detector = startRobof
     try { opinionJob = detector(parsed) } catch { opinionJob = { result: null, cancel() {} } }
     try {
       const result = await diagnose(parsed)
-      const knowledgeMatch = matchKnowledge(result)
-      const secondOpinion = result.crop === 'banana' && !result.notAPlant ? opinionJob.result : null
+      let knowledgeMatch = null
+      try { knowledgeMatch = matchKnowledge(result) } catch { /* Optional lookup is best effort. */ }
+      const secondOpinion = result.crop === 'banana' && !result.notAPlant ? opinionJob?.result || null : null
       const differs = secondOpinion && knowledgeMatch && knowledgeMatch.id !== `banana-${secondOpinion.label}`
       const note = differs ? (parsed.language === 'filipino' ?
         'Magkaiba ang dalawang pagsusuri. Humingi ng payo sa lokal na opisyal ng agrikultura.' :
         'Lahi ang duha ka pagsusi. Pangayo og tambag sa lokal nga opisyal sa agrikultura.') : null
-      return res.status(200).json(validateDiagnosis({ ...result, knowledgeMatch, secondOpinion, note }))
+      let enriched = { ...result, whenToCallExpert: note ? `${result.whenToCallExpert} ${note}` : result.whenToCallExpert, knowledgeMatch, secondOpinion, note }
+      try { enriched = validateDiagnosis(enriched) }
+      catch { enriched = validateDiagnosis({ ...result, knowledgeMatch: null, secondOpinion: null, note: null }) }
+      return res.status(200).json(enriched)
     } catch (error) {
       logger.error('Diagnosis request failed')
       return res.status(500).json({ error: error.safeMessage || 'Diagnosis failed. Please try again or contact your agriculture office.' })
     } finally {
-      opinionJob.cancel()
+      try { opinionJob?.cancel?.() } catch { /* Optional cancellation must not affect the response. */ }
     }
   })
 

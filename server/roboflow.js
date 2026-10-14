@@ -4,10 +4,11 @@ const labels = new Set(['healthy', 'sigatoka', 'cordana', 'pestalotiopsis'])
 export function createRoboflowDetector({ apiKey = process.env.ROBOFLOW_API_KEY, fetchImpl = fetch, timeoutMs = 3000 } = {}) {
   return function start({ imageBytes }) {
     const controller = new AbortController()
-    const state = { result: null, cancel: () => controller.abort() }
+    let timer, finishDeadline
+    const state = { result: null, cancel: () => { controller.abort(); clearTimeout(timer); finishDeadline?.(null) } }
     if (!apiKey?.trim()) return state
-    let timer
     const deadline = new Promise(resolve => {
+      finishDeadline = resolve
       timer = setTimeout(() => { resolve(null); controller.abort() }, Math.min(timeoutMs, 3000))
     })
     const request = (async () => {

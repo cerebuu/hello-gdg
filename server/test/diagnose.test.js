@@ -48,7 +48,7 @@ test('POST /api/diagnose validates and forwards the image request', async () => 
     })
 
     assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), validResult)
+    assert.deepEqual(await response.json(), { ...validResult, knowledgeMatch: null, secondOpinion: null, note: null })
     assert.equal(received.imageBytes.toString(), 'test image')
     assert.equal(received.mimeType, 'image/jpeg')
     assert.equal(received.language, 'bisaya')
