@@ -1,0 +1,177 @@
+[
+  {
+    "id": "banana-leaf-spot",
+    "label": "Banana leaf spot",
+    "imagePath": "/samples/banana-leaf-spot.svg",
+    "results": {
+      "bisaya": {
+        "crop": "banana",
+        "problemNameEnglish": "Possible banana leaf spot",
+        "problemNameLocal": "Posibleng mga mantsa sa dahon sa saging",
+        "confidence": "Medium",
+        "severity": "Moderate",
+        "actionSteps": [
+          "Litratuhi ug bantayi ang mga mantsa ug kung modaghan ba kini.",
+          "Ayaw ibalhin ang yuta o hugaw nga mga gamit ngadto sa ubang tanom.",
+          "Pangayo og tabang sa lokal nga opisina sa agrikultura sa dili pa magtambal."
+        ],
+        "whenToCallExpert": "Kontaka ang lokal nga opisina sa agrikultura kung mokaylap ang sintomas o dili ka sigurado.",
+        "notAPlant": false
+      },
+      "filipino": {
+        "crop": "banana",
+        "problemNameEnglish": "Possible banana leaf spot",
+        "problemNameLocal": "Posibleng batik sa dahon ng saging",
+        "confidence": "Medium",
+        "severity": "Moderate",
+        "actionSteps": [
+          "Kunan ng litrato at bantayan kung dumarami ang mga batik.",
+          "Huwag ilipat ang lupa o maruming kagamitan sa ibang halaman.",
+          "Humingi ng tulong sa lokal na tanggapan ng agrikultura bago gumamot."
+        ],
+        "whenToCallExpert": "Makipag-ugnayan sa lokal na tanggapan ng agrikultura kung kumakalat ang sintomas o hindi ka sigurado.",
+        "notAPlant": false
+      }
+    }
+  },
+  {
+    "id": "banana-wilt",
+    "label": "Wilting banana — suspected Fusarium",
+    "imagePath": "/samples/banana-wilt.svg",
+    "results": {
+      "bisaya": {
+        "crop": "banana",
+        "problemNameEnglish": "Wilting banana — Fusarium wilt suspected, unconfirmed",
+        "problemNameLocal": "Naluyong saging — posibleng Fusarium, wala pa mapamatud-i",
+        "confidence": "Low",
+        "severity": "Severe",
+        "actionSteps": [
+          "Ayaw ibalhin ang yuta, suhi, o mga gamit gikan sa apektadong dapit.",
+          "Ayaw ibton o putlon ang tanom base lamang sa litrato.",
+          "Kontaka dayon ang lokal nga opisina sa agrikultura alang sa pagsusi."
+        ],
+        "whenToCallExpert": "Kontaka ang lokal nga opisina sa agrikultura kung mokaylap ang sintomas o dili ka sigurado.",
+        "notAPlant": false
+      },
+      "filipino": {
+        "crop": "banana",
+        "problemNameEnglish": "Wilting banana — Fusarium wilt suspected, unconfirmed",
+        "problemNameLocal": "Nanalantang saging — posibleng Fusarium, hindi pa kumpirmado",
+        "confidence": "Low",
+        "severity": "Severe",
+        "actionSteps": [
+          "Huwag ilipat ang lupa, suhi, o kagamitan mula sa apektadong lugar.",
+          "Huwag bunutin o putulin ang halaman batay lamang sa litrato.",
+          "Makipag-ugnayan agad sa lokal na tanggapan ng agrikultura para sa pagsusuri."
+        ],
+        "whenToCallExpert": "Makipag-ugnayan sa lokal na tanggapan ng agrikultura kung kumakalat ang sintomas o hindi ka sigurado.",
+        "notAPlant": false
+      }
+    }
+  },
+  {
+    "id": "cacao-pod-rot",
+    "label": "Cacao pod rot",
+    "imagePath": "/samples/cacao-pod-rot.svg",
+    "results": {
+      "bisaya": {
+        "crop": "cacao",
+        "problemNameEnglish": "Possible cacao pod rot",
+        "problemNameLocal": "Posibleng pagkadunot sa bunga sa kakaw",
+        "confidence": "Medium",
+        "severity": "Moderate",
+        "actionSteps": [
+          "Litratuhi ang apektadong bunga ug bantayi ang ubang bunga.",
+          "Ayaw isagol ang klarong dunot nga bunga sa himsog nga ani.",
+          "Pangayo og tambag sa opisina sa agrikultura sa luwas nga pagtangtang ug paglain sa dunot nga bunga."
+        ],
+        "whenToCallExpert": "Kontaka ang lokal nga opisina sa agrikultura kung mokaylap ang sintomas o dili ka sigurado.",
+        "notAPlant": false
+      },
+      "filipino": {
+        "crop": "cacao",
+        "problemNameEnglish": "Possible cacao pod rot",
+        "problemNameLocal": "Posibleng pagkabulok ng bunga ng kakaw",
+        "confidence": "Medium",
+        "severity": "Moderate",
+        "actionSteps": [
+          "Kunan ng litrato ang apektadong bunga at bantayan ang iba pang bunga.",
+          "Huwag ihalo ang malinaw na bulok na bunga sa malusog na ani.",
+          "Humingi ng payo sa tanggapan ng agrikultura sa ligtas na pag-alis at paghiwalay ng bulok na bunga."
+        ],
+        "whenToCallExpert": "Makipag-ugnayan sa lokal na tanggapan ng agrikultura kung kumakalat ang sintomas o hindi ka sigurado.",
+        "notAPlant": false
+      }
+    }
+  },
+  {
+    "id": "healthy-leaf",
+    "label": "Healthy-looking leaf",
+    "imagePath": "/samples/healthy-leaf.svg",
+    "results": {
+      "bisaya": {
+        "crop": "banana",
+        "problemNameEnglish": "No obvious disease visible in this example",
+        "problemNameLocal": "Walay klarong sakit nga makita niini nga pananglitan",
+        "confidence": "Low",
+        "severity": "Unknown",
+        "actionSteps": [
+          "Padayon nga bantayi ang dahon ug bunga sa tanom.",
+          "Hupti nga limpyo ang mga gamit sa uma.",
+          "Pangayo og tabang kung adunay bag-ong mantsa o pagkalaya."
+        ],
+        "whenToCallExpert": "Kontaka ang lokal nga opisina sa agrikultura kung mokaylap ang sintomas o dili ka sigurado.",
+        "notAPlant": false
+      },
+      "filipino": {
+        "crop": "banana",
+        "problemNameEnglish": "No obvious disease visible in this example",
+        "problemNameLocal": "Walang malinaw na sakit na nakikita sa halimbawang ito",
+        "confidence": "Low",
+        "severity": "Unknown",
+        "actionSteps": [
+          "Patuloy na bantayan ang mga dahon at bunga.",
+          "Panatilihing malinis ang mga kagamitan sa bukid.",
+          "Humingi ng tulong kung may bagong batik o pagkalanta."
+        ],
+        "whenToCallExpert": "Makipag-ugnayan sa lokal na tanggapan ng agrikultura kung kumakalat ang sintomas o hindi ka sigurado.",
+        "notAPlant": false
+      }
+    }
+  },
+  {
+    "id": "non-plant",
+    "label": "Non-plant image",
+    "imagePath": "/samples/non-plant.svg",
+    "results": {
+      "bisaya": {
+        "crop": "unknown",
+        "problemNameEnglish": "This example is not a plant",
+        "problemNameLocal": "Dili kini tanom",
+        "confidence": "Low",
+        "severity": "Unknown",
+        "actionSteps": [
+          "Kuhaa ang litrato sa dahon o bunga sa saging o kakaw.",
+          "Siguroha nga hayag ug klaro ang litrato.",
+          "Pangayo og tabang sa pamilya o teknisyan kung lisod pagkuha og litrato."
+        ],
+        "whenToCallExpert": "Kontaka ang lokal nga opisina sa agrikultura kung mokaylap ang sintomas o dili ka sigurado.",
+        "notAPlant": true
+      },
+      "filipino": {
+        "crop": "unknown",
+        "problemNameEnglish": "This example is not a plant",
+        "problemNameLocal": "Hindi ito halaman",
+        "confidence": "Low",
+        "severity": "Unknown",
+        "actionSteps": [
+          "Kunan ng litrato ang dahon o bunga ng saging o kakaw.",
+          "Siguraduhing maliwanag at malinaw ang litrato.",
+          "Humingi ng tulong sa pamilya o teknisyan kung mahirap kumuha ng litrato."
+        ],
+        "whenToCallExpert": "Makipag-ugnayan sa lokal na tanggapan ng agrikultura kung kumakalat ang sintomas o hindi ka sigurado.",
+        "notAPlant": true
+      }
+    }
+  }
+]
