@@ -149,6 +149,11 @@ button:disabled { cursor: not-allowed; opacity: .53; }
 .disease-local { color: #818e81; margin: 0; font-size: 11px; }
 .confidence-label { display: flex; justify-content: space-between; align-items: center; margin-top: 19px; color: #627365; font-size: 11px; }
 .confidence-label strong { color: #42744a; font: 800 17px Manrope, sans-serif; }
+.optional-known { margin: 10px 0 0; color: #536b58; font-size: 12px; }
+.second-opinion { margin-top: 11px; padding: 10px 11px; border: 1px solid #dce9d9; border-radius: 11px; background: #f5f8f2; }
+.second-chip { display: inline-block; max-width: 100%; color: #315e3d; font-size: 11px; font-weight: 700; overflow-wrap: anywhere; }
+.second-opinion p, .optional-note { margin: 5px 0 0; color: #68786a; font-size: 11px; line-height: 1.5; }
+.optional-note { padding: 9px 10px; border-left: 3px solid #d3a75c; background: #fff8ea; }
 .confidence-track { height: 7px; margin-top: 7px; overflow: hidden; background: #e9eee5; border-radius: 9px; }
 .confidence-track span { height: 100%; display: block; background: #609366; border-radius: inherit; }
 .confidence-note { color: #929b91; margin: 6px 0 0; font-size: 9px; }
