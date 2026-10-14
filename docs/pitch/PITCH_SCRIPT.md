@@ -25,7 +25,7 @@ This is especially useful for banana and cacao growers in the Davao Region.”
 I submit it in live mode.
 
 The result uses the word possible. It shows the crop, the possible problem,
-uncertainty, three actions, and when to call an expert.
+uncertainty, actions, and when to call an expert.
 
 I can switch to Filipino. I can copy the report. I can also print a farmer
 card.
@@ -36,8 +36,8 @@ is visible. This is a saved example, not a diagnosis of the photo.”
 ## 1:35–2:00 — How it works
 
 “The phone sends the selected image to our server only when live mode is
-submitted. The server calls Google Gemini with the requested language and a
-structured response. The key stays on the server.
+submitted. The server calls Google Gemini with the requested Bisaya or
+Filipino language and a structured response. The key stays on the server.
 
 The client renders the response in one consistent format. For a presentation
 or a connection problem, the user can explicitly choose a local sample.”
@@ -63,8 +63,9 @@ prototype with a clear safety boundary.”
 ## 2:40–2:52 — Roadmap
 
 “Next, we want an agriculture-source knowledge base, trained detector checks as
-a second opinion, more crops and dialects, and extension-officer review. Those
-are next steps, not claims about the current live server.”
+a second opinion, more crops and dialects, and extension-officer review. The
+knowledge base and detector checks are not yet verified or part of the current
+live server.”
 
 ## 2:52–3:00 — Closing ask
 
