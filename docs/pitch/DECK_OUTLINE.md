@@ -58,11 +58,12 @@ disclaimer and the need for expert and native-speaker review.
 
 - Live mode needs internet; language and crop guidance need review.
 - Testing so far is on limited photos.
-- Roadmap: source-backed knowledge, trained second opinion, more crops and
-  dialects, extension-officer review.
+- Roadmap: source-backed knowledge, trained detector second checks, more crops
+  and dialects, extension-officer review.
 
 **Speaker note:** Confidence comes from naming the limits. Do not present an
-accuracy percentage or partnership claim.
+accuracy percentage. Detector checks and the knowledge base are next
+integrations for the server, not measured claims about the current deployment.
 
 ## Slide 8 — The ask
 
