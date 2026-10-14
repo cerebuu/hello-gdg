@@ -98,3 +98,76 @@ PWA or a fully offline installation. For arbitrary uploads, choosing a backup
 case is explicit; the app never pretends to infer a matching disease without the
 model. Placeholder illustrations must be replaced with licensed, consented crop
 photos before a realistic field-photo demonstration.
+
+
+## Live Gemini verification
+
+14 October 2026, `fix/live-verify`. `.env` exists and is Git-ignored.
+GEMINI_API_KEY: set. GEMINI_MODEL: set. Values were not logged; `.env` was
+not changed. Only server processes were started for live calls, with a temporary
+client process for the controlled timeout test. All temporary processes were
+stopped afterward.
+
+The configured legacy model returned provider NOT_FOUND (404), surfaced safely
+as JSON 500 in a–d (about 0.9 s). Official documentation limits 2.5-model access
+for new users. The documented `gemini-3.8-flash` also returned high-demand UNAVAILABLE
+errors, surfaced as JSON 500 in 4.7–14.0 s. Successful verification used a runtime
+`GEMINI_MODEL=gemini-3.5-flash-lite` override; the file remains unchanged.
+**Use `GEMINI_MODEL=gemini-3.5-flash-lite` in your privately managed configuration.**
+
+Documented image-input models confirmed in the model listing:
+
+- [gemini-3.5-flash-lite](https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite): tested successfully.
+- [gemini-3.8-flash](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash): available identifier, but high-demand errors during this test.
+- [gemini-3.1-pro-preview](https://ai.google.dev/gemini-api/docs/models/gemini-3.1-pro-preview): image input documented; not called in this test.
+
+### Final cases after the timeout fix
+
+| Case | Result | HTTP | Latency | Contract / expectation |
+| --- | --- | --- | --- | --- |
+| a. Banana-leaf illustration, Bisaya | PASS | 200 | 2806 ms | Diagnosis validator PASS |
+| b. Same illustration, Filipino | PASS | 200 | 2663 ms | Diagnosis validator PASS |
+| c. Cacao-pod illustration, Bisaya | PASS | 200 | 2665 ms | Diagnosis validator PASS |
+| d. Non-plant image, Bisaya | PASS | 200 | 2808 ms | Diagnosis validator PASS; notAPlant true / Low |
+| e. Image over 5 MiB | PASS | 400 | 36 ms | Clear JSON error |
+| f. Malformed JSON | PASS | 400 | 2 ms | Clear JSON error |
+| g. Notes only, no photo | PASS | 400 | 2 ms | Clear JSON error; notes-only is unsupported, correctly rejected |
+| h. Key unset in isolated server subprocess | PASS | 500 | 6 ms | Clear JSON error; server stayed available, no crash |
+| Slow Gemini + client fallback | PASS | 500 | 14042 ms | Safe timed-out JSON error; Chrome displays Offline demo mode |
+
+Typical successful-image latency: 2736 ms.
+
+The images were temporary generated PNG illustrations under `/private/tmp`, not
+committed photos or sample SVGs. A and B returned crop unknown/Low; C treated the
+cacao drawing as non-plant/Low. These are cautious contract-valid responses,
+not proof of crop identification or disease accuracy. D returned non-plant/Low.
+Real field-photo accuracy remains unverified. No live images are committed.
+
+### Safety review
+
+All successful live outputs were scanned for a finite list of chemical brands,
+numeric dosage patterns, and certainty wording, then read manually. No branded
+chemicals, doses, or claim of confirmed disease was observed. The final run's
+single keyword hit was “sigurado” in an invitation to contact an expert for
+certainty; an earlier run's “dili ka sigurado” means the user is unsure. These
+are not confirmed diagnoses. No prompt change was needed. Full final language
+text and sample text are in [LANGUAGE_REVIEW.md](LANGUAGE_REVIEW.md).
+
+### Server bug fixed
+
+The SDK timeout applies per HTTP attempt and its retry defaults can exceed the
+intended overall budget. Enforced a single 14-second whole-call deadline,
+abort signal, and one provider attempt. A controlled stalled SDK, routed through
+Express and Vite to the real client in Chrome, returned JSON 500 at
+14042 ms and triggered labeled sample fallback. This is a deterministic
+fault-injection check, not an intentionally slowed production Gemini call.
+The new regression test and all previous backend tests passed (11 total).
+Successful live a–d and request-error e–h cases were rerun after the fix.
+No client or feature changes were made.
+
+### Remaining human checks
+
+Change the privately managed model value as above; it was deliberately not edited.
+Review Bisaya/Filipino text with native speakers and guidance with an agriculture
+expert. Check real-phone camera capture, OS clipboard permissions, and physical
+printing. Real crop photographs and diagnosis accuracy also need review.
