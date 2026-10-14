@@ -1,0 +1,51 @@
+[
+  {
+    "id": "banana-healthy",
+    "crop": "banana",
+    "name": "Healthy",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-sigatoka",
+    "crop": "banana",
+    "name": "Sigatoka",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-cordana",
+    "crop": "banana",
+    "name": "Cordana",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-pestalotiopsis",
+    "crop": "banana",
+    "name": "Pestalotiopsis",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "cacao-healthy",
+    "crop": "cacao",
+    "name": "Healthy",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  },
+  {
+    "id": "cacao-black-pod-rot",
+    "crop": "cacao",
+    "name": "Black pod rot",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  },
+  {
+    "id": "cacao-pod-borer",
+    "crop": "cacao",
+    "name": "Pod borer",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  }
+]

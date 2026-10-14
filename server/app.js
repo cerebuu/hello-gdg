@@ -1,6 +1,8 @@
 import express from 'express'
 import cors from 'cors'
-import { diagnoseWithGemini } from './gemini.js'
+import { diagnoseWithGemini, validateDiagnosis } from './gemini.js'
+import { matchKnowledge } from './knowledge.js'
+import { startRoboflow } from './roboflow.js'
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024
 const MAX_BASE64_LENGTH = Math.ceil(MAX_IMAGE_BYTES / 3) * 4
@@ -48,7 +50,7 @@ function parseDiagnosisRequest(body) {
   return { imageBytes, mimeType: body.mimeType, language: body.language }
 }
 
-export function createApp({ diagnose = diagnoseWithGemini, logger = console } = {}) {
+export function createApp({ diagnose = diagnoseWithGemini, detector = startRoboflow, logger = console } = {}) {
   const app = express()
 
   app.use(cors({ origin: 'http://localhost:5173' }))
@@ -62,12 +64,24 @@ export function createApp({ diagnose = diagnoseWithGemini, logger = console } = 
     const parsed = parseDiagnosisRequest(req.body)
     if (parsed.error) return res.status(400).json({ error: parsed.error })
 
+    // The request has no crop hint: start both checks, expose detector output only for banana.
+    // Read an already-ready opinion when Gemini finishes; never wait for the optional check.
+    let opinionJob
+    try { opinionJob = detector(parsed) } catch { opinionJob = { result: null, cancel() {} } }
     try {
       const result = await diagnose(parsed)
-      return res.status(200).json(result)
+      const knowledgeMatch = matchKnowledge(result)
+      const secondOpinion = result.crop === 'banana' && !result.notAPlant ? opinionJob.result : null
+      const differs = secondOpinion && knowledgeMatch && knowledgeMatch.id !== `banana-${secondOpinion.label}`
+      const note = differs ? (parsed.language === 'filipino' ?
+        'Magkaiba ang dalawang pagsusuri. Humingi ng payo sa lokal na opisyal ng agrikultura.' :
+        'Lahi ang duha ka pagsusi. Pangayo og tambag sa lokal nga opisyal sa agrikultura.') : null
+      return res.status(200).json(validateDiagnosis({ ...result, knowledgeMatch, secondOpinion, note }))
     } catch (error) {
       logger.error('Diagnosis request failed')
       return res.status(500).json({ error: error.safeMessage || 'Diagnosis failed. Please try again or contact your agriculture office.' })
+    } finally {
+      opinionJob.cancel()
     }
   })
 
