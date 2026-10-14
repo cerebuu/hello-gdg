@@ -48,13 +48,14 @@ footer { margin-top: 30px; }
 @media print {
   @page { margin: 14mm; }
   body { background: white; color: black; font-size: 12pt; }
-  body * { visibility: hidden; }
-  body[data-print=report] .print-report, body[data-print=report] .print-report *,
-  body[data-print=farmer] .farmer-card, body[data-print=farmer] .farmer-card * { visibility: visible; }
-  body[data-print=report] .print-report, body[data-print=farmer] .farmer-card {
-    position: absolute; top: 0; left: 0; width: 100%; border: 0; padding: 0; margin: 0;
-  }
+  .app-shell { max-width: none; margin: 0; padding: 0; }
+  .app-shell > * { display: none; }
+  .app-shell > .outcome { display: block; }
+  .outcome > * { display: none; }
+  .outcome > .share { display: block; border: 0; margin: 0; padding: 0; }
+  .share > * { display: none; }
+  body[data-print=report] .share > .print-report,
+  body[data-print=farmer] .share > .farmer-card { display: block; border: 0; padding: 0; margin: 0; }
   .farmer-card li { font-size: 22pt; break-inside: avoid; }
   .report-photo { max-height: 50mm; }
-  button, input, select, textarea { display: none !important; }
 }

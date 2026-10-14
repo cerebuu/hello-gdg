@@ -21,7 +21,7 @@ function parseDiagnosisRequest(body) {
 
   if (
     body.imageBase64.length % 4 !== 0 ||
-    !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(
+    !/^[A-Za-z0-9+/]*={0,2}$/.test(
       body.imageBase64,
     )
   ) {

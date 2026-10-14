@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createApp } from '../app.js'
-import { createGeminiDiagnoser } from '../gemini.js'
+import { createGeminiDiagnoser, validateDiagnosis } from '../gemini.js'
 
 const validResult = {
   crop: 'banana',
@@ -168,4 +168,56 @@ test('Gemini service rejects invalid structured output and missing credentials',
     unconfiguredDiagnoser({ imageBytes: Buffer.from('image'), mimeType: 'image/png', language: 'bisaya' }),
     /GEMINI_API_KEY is not configured/,
   )
+})
+
+
+test('5 MB boundary, malformed JSON, and oversized bodies return JSON 400', async () => {
+  let calls = 0
+  await withServer(createApp({ diagnose: async () => { calls++; return validResult } }), async base => {
+    async function post(body) {
+      return fetch(`${base}/api/diagnose`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+    }
+    const exact = Buffer.alloc(5 * 1024 * 1024).toString('base64')
+    const ok = await post(JSON.stringify({ imageBase64: exact, mimeType: 'image/jpeg', language: 'bisaya' }))
+    assert.equal(ok.status, 200)
+    const over = Buffer.alloc(5 * 1024 * 1024 + 1).toString('base64')
+    for (const body of [JSON.stringify({ imageBase64: over, mimeType: 'image/jpeg', language: 'bisaya' }), '{bad json', JSON.stringify({ imageBase64: 'a'.repeat(9 * 1024 * 1024) })]) {
+      const response = await post(body)
+      assert.equal(response.status, 400)
+      assert.equal(typeof (await response.json()).error, 'string')
+    }
+    assert.equal(calls, 1)
+  })
+})
+
+test('missing key and missing model are clear, safe configuration errors', async () => {
+  const input = { imageBytes: Buffer.from('image'), mimeType: 'image/png', language: 'bisaya' }
+  for (const [diagnose, field] of [
+    [createGeminiDiagnoser({ apiKey: '', model: '' }), 'GEMINI_API_KEY'],
+    [createGeminiDiagnoser({ client: {}, model: '' }), 'GEMINI_MODEL'],
+  ]) {
+    await assert.rejects(diagnose(input), error => error.safeMessage.includes(field))
+    await withServer(createApp({ diagnose, logger: { error() {} } }), async base => {
+      const response = await fetch(`${base}/api/diagnose`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ imageBase64: 'dGVzdA==', mimeType: 'image/png', language: 'bisaya' }) })
+      assert.equal(response.status, 500)
+      assert.match((await response.json()).error, new RegExp(field))
+    })
+  }
+})
+
+test('all five bilingual samples follow the contract', async () => {
+  const { readFile } = await import('node:fs/promises')
+  const samples = JSON.parse(await readFile(new URL('../../data/samples.json', import.meta.url), 'utf8'))
+  assert.equal(samples.length, 5)
+  for (const sample of samples) for (const language of ['bisaya', 'filipino']) {
+    assert.deepEqual(validateDiagnosis(sample.results[language]), sample.results[language])
+  }
+})
+
+test('invalid JSON and overconfident unknown/non-plant results are rejected', async () => {
+  const input = { imageBytes: Buffer.from('image'), mimeType: 'image/png', language: 'bisaya' }
+  for (const text of ['not JSON', JSON.stringify({ ...validResult, crop: 'unknown', confidence: 'High' }), JSON.stringify({ ...validResult, crop: 'unknown', confidence: 'High', notAPlant: true })]) {
+    const diagnose = createGeminiDiagnoser({ model: 'test-model', client: { models: { generateContent: async () => ({ text }) } } })
+    await assert.rejects(diagnose(input))
+  }
 })

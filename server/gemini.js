@@ -64,6 +64,7 @@ export function validateDiagnosis(result) {
     result.actionSteps.every(isNonEmptyString) &&
     isNonEmptyString(result.whenToCallExpert) &&
     typeof result.notAPlant === 'boolean' &&
+    (result.crop !== 'unknown' || result.confidence === 'Low') &&
     (!result.notAPlant ||
       (result.crop === 'unknown' && result.severity === 'Unknown' && result.confidence === 'Low'))
 
