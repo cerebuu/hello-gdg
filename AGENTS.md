@@ -24,18 +24,20 @@ No real API key is needed for the scaffold.
 
 ## Layout and ownership
 
-| Folder | Purpose | Owner |
+| Area | Files and responsibilities | Owner |
 | --- | --- | --- |
-| `server/` | Express API; future Gemini proxy | Caleb Adriel Tingson |
-| Root configuration | Integration and development scripts | Caleb Adriel Tingson |
-| `client/` | Mobile-first React UI | Mark Daniel Cona |
-| `data/` | Sample results (later) | Jefferson F. Laspiñas (Jeff) |
-| `public/samples/` | Sample images (later); served by Vite | Jefferson F. Laspiñas (Jeff) |
-| `docs/` | API contract, pitch notes, and deck | Bruce John B. Arevalo |
+| UI | `client/src/App.jsx`, `client/src/components/PhotoUpload.jsx`, `client/src/components/LanguageToggle.jsx`, API call and loading/error state | @MarkDanielCona |
+| UI | `client/src/components/ResultCard.jsx`, `client/src/components/SampleButtons.jsx`, share-with-agri-office report, styling in `client/src/index.css` | @szi-asesor |
+| Backend | Server Gemini service, `POST /api/diagnose` route, JSON schema validation | @Yknowjeff |
+| Backend and samples | `data/samples.json`, `public/samples/`, server fallback to sample results, `server/scripts/test-diagnose.js` | @Bruce-John-Me |
 
-Szianzey Asesor is a team member; folder ownership has not been specified.
+`client/` holds the React UI, `server/` the Express API, `data/` future sample
+results, `public/samples/` future sample images, and `docs/` the API contract and
+pitch notes. Listed future responsibilities do not imply implemented features.
 Empty folders retain `.gitkeep`. The client UI renders labeled placeholders.
 `client/src/mockResult.js` is an illustrative fixture for future UI development.
+
+Nobody edits another person's files without asking in the group chat first.
 
 ## Rules
 
