@@ -221,3 +221,27 @@ test('invalid JSON and overconfident unknown/non-plant results are rejected', as
     await assert.rejects(diagnose(input))
   }
 })
+
+
+test('whole-call deadline aborts a stalled SDK and returns a safe JSON error', async () => {
+  let signal
+  const diagnose = createGeminiDiagnoser({
+    model: 'test-model', timeoutMs: 100,
+    client: { models: { generateContent: async request => {
+      signal = request.config.abortSignal
+      assert.equal(request.config.httpOptions.retryOptions.attempts, 1)
+      return new Promise(() => {})
+    } } },
+  })
+  await withServer(createApp({ diagnose, logger: { error() {} } }), async base => {
+    const start = performance.now()
+    const response = await fetch(`${base}/api/diagnose`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: 'dGVzdA==', mimeType: 'image/png', language: 'bisaya' }),
+    })
+    assert.equal(response.status, 500)
+    assert.match((await response.json()).error, /timed out/)
+    assert.ok(performance.now() - start < 1000)
+    assert.equal(signal.aborted, true)
+  })
+})
