@@ -20,7 +20,7 @@ Client: http://localhost:5173. Server: http://localhost:3001 by default.
 The server reads the root `.env` with Node's built-in environment-file support.
 Vite proxies `/api` to the server using PORT from the environment or root `.env`.
 `npm run build` builds the client into `client/dist`.
-No real API key is needed for the scaffold.
+No real API key is needed for the sample demo.
 
 ## Layout and ownership
 
