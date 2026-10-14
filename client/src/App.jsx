@@ -56,6 +56,9 @@ const copy = {
     supportText: 'Kon nagkadaghan ang sakit o dili ka sigurado sa resulta, pangayo og tabang sa agricultural technician sa inyong barangay.',
     backHome: 'Balik sa Home',
     analyzing: 'Gisusi ang litrato…',
+    analyzingLong: 'Dugay gamay ang pagsusi.',
+    useSample: 'Gamita ang sample',
+    offlineFriendly: 'Dili nahuman ang live nga pagsusi. Gipakita ang sample nga demo.',
     analyze: 'Tan-awa ang sample nga resulta',
     startHere: 'SUGOD DINHI',
     uploadStep: 'I-upload o kuhaa ang hulagway',
@@ -124,6 +127,9 @@ const copy = {
     supportText: 'Kung lumalala ang sakit o hindi ka sigurado sa resulta, humingi ng tulong sa agricultural technician sa inyong barangay.',
     backHome: 'Bumalik sa Home',
     analyzing: 'Sinusuri ang larawan…',
+    analyzingLong: 'Medyo matagal ang pagsusuri.',
+    useSample: 'Gamitin ang sample',
+    offlineFriendly: 'Hindi natapos ang live na pagsusuri. Ipinapakita ang sample na demo.',
     analyze: 'Tingnan ang sample na resulta',
     startHere: 'MAGSIMULA DITO',
     uploadStep: 'Mag-upload o kumuha ng larawan',
@@ -216,6 +222,7 @@ function App() {
   const [result, setResult] = useState(null)
   const [outcome, setOutcome] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [slow, setSlow] = useState(false)
   const [error, setError] = useState('')
   const [activeSample, setActiveSample] = useState(samples[0])
   const pending = useRef(null)
@@ -234,6 +241,9 @@ function App() {
   }
 
   function selectSample(sample) {
+    pending.current?.abort()
+    setLoading(false)
+    setSlow(false)
     const nextResult = sampleResult(sample, language)
     setActiveSample(sample)
     setError('')
@@ -267,20 +277,21 @@ function App() {
     const controller = new AbortController()
     pending.current = controller
     const timer = setTimeout(() => controller.abort(), 15000)
+    const slowTimer = setTimeout(() => setSlow(true), 8000)
     try {
       if (!online) throw new Error('Live diagnosis unavailable. Showing a selected SAMPLE, not a diagnosis of your photo.')
       const next = await requestDiagnosis(input, language, controller.signal)
       setResult(next)
       setOutcome({ result: next, source: 'live', language, image: input.preview, date: new Date().toISOString() })
     } catch (problem) {
-      setError(problem.name === 'AbortError' ? 'The check took over 15 seconds.' : problem.message)
+      setError(t.offlineFriendly)
       setPhoto(backup.imagePath)
       const backupResult = sampleResult(backup, language)
       setResult(backupResult)
       setOutcome({ result: backupResult, sample: backup, source: 'offline', language,
         image: backup.imagePath, date: new Date().toISOString() })
     } finally {
-      clearTimeout(timer); pending.current = null; setLoading(false); setPage('result')
+      clearTimeout(timer); clearTimeout(slowTimer); pending.current = null; setLoading(false); setSlow(false); setPage('result')
     }
   }
 
@@ -291,7 +302,7 @@ function App() {
     setError('')
     setLoading(true)
     let prepared
-    try { prepared = await preparePhoto(file) }
+    try { prepared = await preparePhoto(file, language) }
     catch (problem) { setError(problem.message || 'Please choose another photo.'); setLoading(false); return }
     setLoading(false)
     await runAnalysis(crop, prepared.preview, prepared)
@@ -374,7 +385,8 @@ function App() {
       <main className="main-layout">
         <div className="page-wrap">
           <p className="wired-disclaimer">{optionalT.disclaimer}</p>
-          {loading && <p className="wired-message" role="status">{t.analyzing}</p>}
+          {loading && <p className="wired-message loading-message" role="status"><span className="spinner" />{t.analyzing}</p>}
+          {slow && loading && <div className="slow-message"><span>{t.analyzingLong}</span><button className="button-secondary" onClick={() => selectSample(activeSample)}>{t.useSample}</button></div>}
           {error && <p className="wired-error" role="alert">{error}</p>}
           {outcome?.source === 'offline' && <p className="wired-message">Offline demo mode · SAMPLE: {outcome.sample.label}. Not a diagnosis of your uploaded photo.</p>}
           {page !== 'home' && page !== 'saved' && page !== 'help' && (
