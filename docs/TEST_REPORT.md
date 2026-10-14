@@ -249,3 +249,5 @@ the optional fields pass validation. Optional errors preserve the main guidance.
 Reproduce unit tests: npm run test --prefix server. Runtime-only live fault check:
 node --env-file=.env server/scripts/verify-detector-timeout.js /path/to/test.png
 No images, .env, or node_modules were added to Git.
+
+Final simulated-timeout rerun: HTTP 200, 2079 ms, contract PASS, zero safety hits.
