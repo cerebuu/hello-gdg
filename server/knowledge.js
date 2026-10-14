@@ -12,15 +12,19 @@ export const diseases = (() => {
 })()
 
 export const candidateConditions = diseases.length ?
-  'Candidate conditions to consider (not confirmed diagnoses; names alone are not symptom evidence): ' +
-  diseases.map(entry => `${entry.crop}: ${entry.name}${entry.visibleSymptoms.length ? ' [' + entry.visibleSymptoms.join('; ') + ']' : ' [source does not describe visible symptoms]'}`).join('; ') : ''
+  'Candidate conditions to consider: ' + diseases.map(entry => `${entry.crop}: ${entry.name}${entry.visibleSymptoms.length ? ' [' + entry.visibleSymptoms.join('; ') + ']' : ''}`).join('; ') +
+  '. These sources do not describe visible symptoms; do not invent sourced symptom associations. Names are not diagnostic evidence.' : ''
+
+export const conditionFamily = id => id === 'banana-black-and-yellow-sigatoka' ? 'banana-sigatoka' : id
+export const entryFor = id => diseases.find(entry => entry.id === id)
 
 export function matchKnowledge(result) {
   if (result.notAPlant || result.crop === 'unknown') return null
-  const name = result.problemNameEnglish.toLowerCase()
-  // Reject negation and differential lists rather than guessing a mapping.
+  const name = result.problemNameEnglish.toLowerCase().replace(/[-_]/g, ' ')
   if (/\b(not|no|without|unlikely|unknown|uncertain|or|versus|vs)\b/.test(name)) return null
   const matches = diseases.filter(entry => entry.crop === result.crop &&
-    new RegExp(`\\b${entry.name.toLowerCase()}\\b`).test(name))
-  return matches.length === 1 ? { id: matches[0].id, name: matches[0].name } : null
+    new RegExp(`\\b${entry.name.toLowerCase().replace(/[-_]/g, ' ')}\\b`).test(name))
+  if (new Set(matches.map(entry => conditionFamily(entry.id))).size !== 1) return null
+  matches.sort((a,b) => b.name.length - a.name.length)
+  return matches.length ? { id: matches[0].id, name: matches[0].name } : null
 }
