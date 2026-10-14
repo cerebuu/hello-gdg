@@ -251,3 +251,113 @@ node --env-file=.env server/scripts/verify-detector-timeout.js /path/to/test.png
 No images, .env, or node_modules were added to Git.
 
 Final simulated-timeout rerun: HTTP 200, 2079 ms, contract PASS, zero safety hits.
+
+
+## Expanded knowledge, confidence rubric, and hosted model comparison
+
+14 October 2026. This section supersedes the earlier single-detector implementation
+notes. Main was merged; the one conflict in server/app.js was resolved to preserve
+main's English support. Main's client files were taken intact and not edited.
+A later main sample-photo update was also merged intact.
+
+Runtime configuration: GEMINI_API_KEY set; GEMINI_MODEL set; ROBOFLOW_API_KEY missing.
+No key values logged, no .env edit, and no test images committed.
+
+### Input set and important limits
+
+The requested eight banana photos (two per sigatoka, cordana, pestalotiopsis,
+healthy) and four cacao pod photos could not be obtained: Roboflow public source
+page/download metadata requests failed with HTTPError, and image-listing pages
+were not accessible. The permitted fallback was five existing SVG sample
+illustrations, rasterized losslessly to PNG under /private/tmp. These are not
+class-balanced field photos and do not establish diagnostic accuracy. The same
+five inputs were used across all three Gemini models. No Cocoa-diseases code or
+images were copied. Dataset Ninja was inspected as an alternative catalogue;
+no dataset was downloaded or copied.
+
+### Comparison table
+
+Expected labels below describe sample scenarios, not verified disease ground
+truth. Every detector column is unverified because its private key is missing.
+Each Gemini cell contains label / confidence, HTTP status, and end-to-end latency.
+
+| Expected/sample scenario | Banana /1 detector | Kilimo /2 classifier | Cacao Instant detector | gemini-3.5-flash-lite | gemini-2.5-flash | gemini-3.5-flash | Agreement |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| banana sample, not verified Sigatoka | Not called: key missing | Not called: key missing | Not called: key missing | unknown / Low; HTTP 200; 2156 ms | No diagnosis result; HTTP 500; 250 ms | No diagnosis result; HTTP 500; 4512 ms | null |
+| wilting banana sample, not a supported-class truth label | Not called: key missing | Not called: key missing | Not called: key missing | unknown / Low; HTTP 200; 1997 ms | No diagnosis result; HTTP 500; 247 ms | No diagnosis result; HTTP 500; 4513 ms | null |
+| healthy-looking banana sample | Not called: key missing | Not called: key missing | Not called: key missing | unknown / Low; HTTP 200; 2027 ms | No diagnosis result; HTTP 500; 251 ms | No diagnosis result; HTTP 500; 3343 ms | null |
+| cacao pod-rot sample | Not called: key missing | Not called: key missing | Not called: key missing | unknown / Low; HTTP 200; 1731 ms | No diagnosis result; HTTP 500; 248 ms | No diagnosis result; HTTP 500; 4511 ms | null |
+| non-plant sample | Not called: key missing | Not called: key missing | Not called: key missing | unknown / Low; HTTP 200; 1824 ms | No diagnosis result; HTTP 500; 248 ms | No diagnosis result; HTTP 500; 4512 ms | null |
+
+All successful diagnosis responses passed the contract validator. All error
+responses were JSON error objects; an error-contract pass is not a successful
+diagnosis. Model availability was checked separately without logging provider
+messages: 2.5 Flash returned provider 404; 3.5 Flash returned provider 503 in one
+check and reached the local deadline in other calls. No fallback silently changed
+the configured Gemini model. The env file was not changed.
+
+Recommended value: **GEMINI_MODEL=gemini-3.5-flash-lite**, based on usable results
+and latency, not accuracy. The other two models did not produce usable results
+within the requested budget on this test run.
+
+### Timing summary
+
+| Model | Successful image calls | Typical latency | Limit/notes |
+| --- | --- | --- | --- |
+| gemini-3.5-flash-lite | 5/5 | 1997 ms | Recommended for this demo |
+| gemini-2.5-flash | 0/5 | 248 ms | Provider error or local deadline; not an accuracy comparison |
+| gemini-3.5-flash | 0/5 | 4512 ms | Provider error or local deadline; not an accuracy comparison |
+
+### Failure checks
+
+| Case | Result | HTTP | Latency | Evidence |
+| --- | --- | --- | --- | --- |
+| missingRoboflow | PASS | 200 | 1975 ms | Valid diagnosis or localized JSON error; optional opinion null |
+| oversized | PASS | 400 | 47 ms | Valid diagnosis or localized JSON error; optional opinion null |
+| malformed | PASS | 400 | 3 ms | Valid diagnosis or localized JSON error; optional opinion null |
+| Simulated detector timeout with real Gemini | PASS | 200 | 2270 ms | Opinion null; zero safety hits |
+| Non-plant sample | PASS | 200 | 1824 ms | Low confidence / non-plant handling; no detector traffic |
+
+29 regression tests pass, including old-response acceptance, label mapping,
+classification-array/dictionary decoding, crop-only calls, junk and other-crop
+filtering, 0.5 cutoff, peer cancellation, default three-second cap, shared budget,
+optional crop-gate failure, confidence downrating without inflation, honest
+independent-source agreement, localized disagreement, and legacy English support.
+
+Successful response text was scanned for a finite list of brands, dosages, and
+confirmed-diagnosis claims; no hits were observed. Model-generated language still
+needs native-speaker review. Server-generated Bisaya/Filipino messages were
+localized; English field identifiers, enum values, canonical condition names,
+and main's English option remain for contract compatibility.
+
+### Image-handling audit
+
+Server accepts JPEG/PNG/WebP and rejects decoded bytes over 5 MiB. It forwards
+the decoded bytes and declared MIME type unchanged; it performs no resizing or
+additional JPEG encoding. The SDK inline image field is covered by a byte-for-byte
+unit assertion. Gemini 3 requests explicitly use high per-image media resolution;
+2.5 retains its default for compatibility. Live 3.5 Flash-Lite requests accepted
+this configuration. The provider rejects transport deadlines below ten seconds,
+so transport uses at least ten seconds while the independent local timer enforces
+the shorter request budget.
+
+The client was inspected but not edited. Main's current upload path resizes the
+longest edge to 1280 pixels and encodes JPEG at quality 0.85. Browser compression
+can lose detail; server high resolution cannot restore it. Test real close-up
+field photos and review camera focus, lighting, framing, and compression before
+making accuracy claims.
+
+### Remaining limitations
+
+- Hosted detector callability: all three UNVERIFIED because ROBOFLOW_API_KEY is missing. No access rejection with a configured key was observed, so the cacao model was not falsely declared unavailable or removed. Recheck it with private credentials; remove/disable it if its hosted endpoint rejects the configured key/model.
+- Cacao's source page lists four classes and project mAP@50 59.1%; that figure is not app accuracy or proof of Instant endpoint access.
+- Kilimo's source page/CC BY attribution need manual verification after the blocked fetch. Only its requested banana classes are configured; no other-crop label is retained.
+- All thirteen knowledge entries lack sourced visual symptom descriptions. They are candidate names, not a clinically validated knowledge base. No symptoms were invented.
+- Clear, class-balanced disease photos were not available. Model quality, higher-confidence specificity, detector agreement in the field, and real-world accuracy remain unproven.
+- Native-speaker and agriculture-officer review, real-phone camera, clipboard permissions, and physical printing remain human checks.
+
+Reproduce: npm run test --prefix server; runtime-only model comparison:
+node --env-file=.env server/scripts/compare-models.js
+A single-model rerun accepts the model name as an argument. Comparison PNG inputs
+must already be prepared under /private/tmp/knowledge-expanded. Raw output,
+photos, and temporary browser artifacts are not committed.

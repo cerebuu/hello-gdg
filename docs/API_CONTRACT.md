@@ -12,7 +12,7 @@ GEMINI_API_KEY and GEMINI_MODEL configuration; missing configuration returns 500
 {
   imageBase64: string,
   mimeType: string,
-  language: "bisaya" | "filipino"
+  language: "bisaya" | "filipino" | "english"
 }
 ```
 
