@@ -74,6 +74,53 @@ const copy = {
     reportLocation: 'Lokasyon',
     expertRecommendation: 'Pakigsulti sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Pananglitan: Davao del Sur',
+    languageSelector: 'Pilia ang pinulongan',
+    switchOffline: 'Ipakita ang offline nga kahimtang',
+    switchOnline: 'Ipakita ang online nga kahimtang',
+    heroLink: 'Atimanon nato ang uma',
+    heroStamp: 'Giya sa|atong uma',
+    savedCount: 'nga litrato',
+    samplePhoto: 'Sample nga hulagway',
+    predictionNotice: 'Timan-i: sample nga prediction kini.',
+    demoNotConnected: 'Dili pa konektado ang AI sa prototype. Dili kini kumpirmadong diagnosis.',
+    localBananaDisease: 'Sigatoka sa saging',
+    localCacaoDisease: 'Itom nga pagkadunot sa bunga sa cacao',
+    reportEyebrow: 'ALANG SA PAGPAAMBIT',
+    reportIntro: 'Tan-awa ang detalye sa dili pa ipaambit.',
+    reportDiseaseLabel: 'POSIBLENG SAKIT · DEMO',
+    confidence: 'confidence',
+    optional: '(opsyonal)',
+    offlineEyebrow: 'OFFLINE NGA KAHIMTANG',
+    savedToView: 'Tan-awa ang mga na-save nga litrato',
+    devicePhotos: 'SA DEVICE NIMO',
+    savedDate: 'Na-save',
+    helpEyebrow: 'GIYA PARA SA MAG-UUMA',
+    photoHelpTitle: 'Unsaon pagkuha og litrato?',
+    photoHelpText: 'Ibutang ang apektadong dahon o bunga sa maayong kahayag. Duola ang camera aron klaro ang mga marka o kadaot.',
+    offlineHelpTitle: 'Walay internet?',
+    offlineHelpText: 'Mahimo nimong i-save ang litrato sa imong device. Dili makahatag og diagnosis hangtod makabalik ang koneksyon.',
+    offlineStatusTitle: 'Offline nga kahimtang',
+    reportDraft: 'DRAFT',
+    reportMissingLocation: 'Wala gihatag',
+    reportSharingNotice: 'Demo lamang: gi-simulate ang malampusong pag-share sa Agri Office.',
+    reportSavedNotice: 'Na-save ang report sa imong device.',
+    photoSavedNotice: 'Na-save ang litrato. Wala pay resulta sa AI.',
+    photoSaveError: 'Wala ma-save ang litrato. Susiha ang koneksyon ug sulayi pag-usab.',
+    photoTypeError: 'Palihog pagpili og hulagway nga litrato.',
+    photoReadError: 'Wala mabasa ang litrato. Sulayi pag-usab.',
+    noPhotoToSubmit: 'Wala pay hulagway nga ipadala.',
+    helpExpertAction: 'Pakigsulti sa inyong agricultural technician.',
+    helpPhotoAction: 'Unsaon pagkuha og litrato?',
+    helpOfflineAction: 'Walay internet?',
+    reportAnalysisDescription: 'PAGSUSI SA TANOM',
+    reportLoadingDate: 'Petsa ug oras sa pagsumite',
+    heroArtAlt: 'Mag-uuma nga nagsusi sa tanom',
+    bananaLatin: 'Banana',
+    savedPhotoIntro: 'Mga litrato nga gi-save samtang walay internet.',
+    locationAlt: 'Ibutang ang lokasyon',
+    imageAlt: 'Sample nga hulagway sa',
+    heroPhotoAlt: 'Lunhaw nga mga uma sa tropikal nga dapit',
+    mainNav: 'Pangunang nabigasyon',
   },
   filipino: {
     subtitle: 'Tulong sa pagtukoy ng sakit ng halaman',
@@ -142,6 +189,169 @@ const copy = {
     reportLocation: 'Lokasyon',
     expertRecommendation: 'Kumonsulta sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Halimbawa: Davao del Sur',
+    languageSelector: 'Piliin ang wika',
+    switchOffline: 'Ipakita ang offline na kalagayan',
+    switchOnline: 'Ipakita ang online na kalagayan',
+    heroLink: 'Alagaan natin ang bukid',
+    heroStamp: 'Gabay sa|ating bukid',
+    savedCount: 'na larawan',
+    samplePhoto: 'Sample na larawan',
+    predictionNotice: 'Paalala: sample na hula ito.',
+    demoNotConnected: 'Hindi pa konektado ang AI sa prototype. Hindi ito kumpirmadong diagnosis.',
+    localBananaDisease: 'Sigatoka ng saging',
+    localCacaoDisease: 'Black pod rot ng cacao',
+    reportEyebrow: 'PARA SA PAGBABAHAGI',
+    reportIntro: 'Suriin ang mga detalye bago ibahagi.',
+    reportDiseaseLabel: 'POSIBLENG SAKIT · DEMO',
+    confidence: 'confidence',
+    optional: '(opsyonal)',
+    offlineEyebrow: 'OFFLINE NA KALAGAYAN',
+    savedToView: 'Tingnan ang mga naka-save na larawan',
+    devicePhotos: 'NASA DEVICE',
+    savedDate: 'Na-save',
+    helpEyebrow: 'GABAY PARA SA MAGSASAKA',
+    photoHelpTitle: 'Paano kumuha ng larawan?',
+    photoHelpText: 'Ilagay sa maliwanag na lugar ang apektadong dahon o bunga. Lumapit upang malinaw ang mga batik o pinsala.',
+    offlineHelpTitle: 'Walang internet?',
+    offlineHelpText: 'Maaari mong i-save ang larawan sa device. Walang diagnosis hangga’t hindi bumabalik ang koneksyon.',
+    offlineStatusTitle: 'Offline na kalagayan',
+    reportDraft: 'DRAFT',
+    reportMissingLocation: 'Hindi ibinigay',
+    reportSharingNotice: 'Demo lamang: kunwaring matagumpay na naibahagi sa Agri Office.',
+    reportSavedNotice: 'Na-save ang report sa iyong device.',
+    photoSavedNotice: 'Na-save ang larawan. Wala pang resulta ng AI.',
+    photoSaveError: 'Hindi na-save ang larawan. Suriin ang koneksyon at subukan muli.',
+    photoTypeError: 'Pumili ng image file.',
+    photoReadError: 'Hindi mabasa ang larawan. Subukan muli.',
+    noPhotoToSubmit: 'Wala pang larawang isusumite.',
+    helpExpertAction: 'Kumonsulta sa inyong agricultural technician.',
+    helpPhotoAction: 'Paano kumuha ng larawan?',
+    helpOfflineAction: 'Walang internet?',
+    reportAnalysisDescription: 'PAGSUSURI NG PANANIM',
+    reportLoadingDate: 'Petsa at oras ng pagsusumite',
+    heroArtAlt: 'Magsasakang nagsusuri ng halaman',
+    bananaLatin: 'Banana',
+    savedPhotoIntro: 'Mga larawang na-save habang walang internet.',
+    locationAlt: 'Ilagay ang lokasyon',
+    imageAlt: 'Sample na larawan ng',
+    heroPhotoAlt: 'Luntiang bukid sa isang tropikal na taniman',
+    mainNav: 'Pangunahing nabigasyon',
+  },
+  english: {
+    subtitle: 'Help identifying plant diseases',
+    welcome: 'Let’s care for your crops!',
+    intro: 'Upload a photo of a leaf or fruit to check for possible disease.',
+    chooseCrop: 'Choose your crop',
+    takePhoto: 'Take a Photo',
+    choosePhoto: 'Choose a Photo',
+    photoTip: 'Take a clear photo of the affected area in good light.',
+    supported: 'Supported crops',
+    banana: 'Banana',
+    cacao: 'Cacao',
+    online: 'Online',
+    offline: 'Offline',
+    saved: 'saved',
+    home: 'Home',
+    savedPhotos: 'Saved Photos',
+    help: 'Help',
+    result: 'Analysis Result',
+    report: 'Generate Report',
+    offlineTitle: 'No internet connection',
+    offlineText: 'Online disease analysis is temporarily unavailable. Save the photo and submit it when your connection returns.',
+    savePhoto: 'Save photo on this device',
+    retry: 'Retry submission',
+    savedTitle: 'Saved photos',
+    emptySaved: 'No photos saved yet.',
+    reportTitle: 'Report Preview',
+    share: 'Share with Agri Office',
+    saveReport: 'Save report to device',
+    helpTitle: 'We’re here to help',
+    helpText: 'Bisaya Crop Doctor helps identify possible diseases in banana and cacao. It does not replace expert advice.',
+    supportTitle: 'When to ask an expert',
+    supportText: 'If the disease is spreading or you are unsure about the result, contact your local agricultural technician.',
+    backHome: 'Back to Home',
+    analyzing: 'Analyzing photo…',
+    analyze: 'View sample result',
+    startHere: 'START HERE',
+    uploadStep: 'Upload or take a photo',
+    goodPhoto: 'A clear photo makes a better guide.',
+    photoHelp: 'Photograph the affected leaf or fruit up close so the signs are easy to see.',
+    farmRegion: 'Davao Region · Here for our farmers',
+    farmCredit: 'Made for farmers in Davao',
+    readyTitle: 'Ready to check',
+    readyText: 'You’re online. The photo will be submitted for a demo analysis.',
+    plantsDescription: 'Two crops grown in our region',
+    plantParts: 'Leaves and fruit',
+    analysisDemo: 'Sample demonstration · Not a real AI diagnosis',
+    diseaseLabel: 'POSSIBLE DISEASE',
+    nextSteps: 'RECOMMENDED NEXT STEPS',
+    nextStepsTitle: 'What should you do?',
+    aiConfidence: 'AI confidence',
+    confidenceNote: 'Sample confidence for demonstration',
+    reportSubtitle: 'Crop health report · Sample',
+    reportDate: 'Date and time submitted',
+    reportSteps: 'Recommended actions',
+    reportDisclaimer: 'Sample report only. This is an AI prediction, not a confirmed diagnosis. Location is optional and is only included if you enter it.',
+    queueTitle: 'Waiting for a connection',
+    noSavedPhotos: 'No photos waiting yet. Save a photo to add it to the queue.',
+    waiting: 'Pending',
+    waitingPhoto: 'Waiting to submit',
+    noDiagnosis: 'Not analyzed',
+    offlineTruth: 'Saving a photo does not produce an AI result. No diagnosis is available until the device reconnects.',
+    retryHint: 'You can retry when your connection returns.',
+    offlineQueueIntro: 'Photos saved while offline.',
+    emptySavedText: 'When offline, save a photo here to submit it later.',
+    reportLocation: 'Location',
+    expertRecommendation: 'Contact your local agricultural technician.',
+    reportLocationPlaceholder: 'For example: Davao del Sur',
+    languageSelector: 'Choose language',
+    switchOffline: 'Switch to offline demo state',
+    switchOnline: 'Switch to online demo state',
+    heroLink: 'Let’s care for the farm',
+    heroStamp: 'A guide for|our farm',
+    savedCount: 'photos saved',
+    reportMissingLocation: 'Not provided',
+    helpExpertAction: 'Contact your local agricultural technician.',
+    helpPhotoAction: 'How do I take a photo?',
+    helpOfflineAction: 'No internet?',
+    reportAnalysisDescription: 'CROP ANALYSIS',
+    reportLoadingDate: 'Date and time submitted',
+    reportSharingNotice: 'Demo only: a successful share with the Agri Office has been simulated.',
+    reportSavedNotice: 'The report was saved to your device.',
+    photoSavedNotice: 'Photo saved. No AI result is available yet.',
+    photoSaveError: 'Could not save the photo. Check your connection and try again.',
+    photoTypeError: 'Please choose an image file.',
+    photoReadError: 'Could not read the photo. Please try again.',
+    noPhotoToSubmit: 'There are no saved photos to submit.',
+    samplePhoto: 'Sample photo',
+    predictionNotice: 'Note: this is a sample prediction.',
+    demoNotConnected: 'AI analysis is not connected in this prototype. This is not a confirmed diagnosis.',
+    localBananaDisease: 'Banana Sigatoka',
+    localCacaoDisease: 'Cacao black pod rot',
+    reportEyebrow: 'FOR SHARING',
+    reportIntro: 'Review the details before sharing.',
+    reportDiseaseLabel: 'POSSIBLE DISEASE · DEMO',
+    confidence: 'confidence',
+    optional: '(optional)',
+    offlineEyebrow: 'OFFLINE MODE',
+    savedToView: 'View saved photos',
+    devicePhotos: 'ON THIS DEVICE',
+    savedDate: 'Saved',
+    savedPhotoIntro: 'Photos saved while offline.',
+    helpEyebrow: 'FARMER GUIDE',
+    photoHelpTitle: 'How do I take a photo?',
+    photoHelpText: 'Place the affected leaf or fruit in good light. Move close enough to clearly show spots or damage.',
+    offlineHelpTitle: 'No internet?',
+    offlineHelpText: 'You can save the photo on your device. A diagnosis is not available until your connection returns.',
+    offlineStatusTitle: 'Offline mode',
+    reportDraft: 'DRAFT',
+    areaSteps: 'TWO SIMPLE STEPS',
+    heroArtAlt: 'A farmer checking a crop plant',
+    bananaLatin: 'Musa acuminata',
+    locationAlt: 'Enter a location',
+    imageAlt: 'Sample photo of',
+    heroPhotoAlt: 'Green fields in a tropical farming landscape',
+    mainNav: 'Main navigation',
   },
 }
 
@@ -168,6 +378,19 @@ const recommendationsFilipino = {
     ['Ano ang dapat gawin ngayon?', 'Alisin ang mga nangingitim o nabubulok na bunga. Ilayo ang mga ito sa malulusog na puno.'],
     ['Paano mapipigilan ang pagkalat?', 'Alisin ang mga damo at panatilihing maaliwalas ang pagitan ng mga sanga. Regular na suriin ang mga bunga.'],
     ['Kailan hihingi ng tulong?', 'Kung maraming bunga ang apektado o hindi ka sigurado, kumonsulta sa inyong agricultural technician.'],
+  ],
+}
+
+const recommendationsEnglish = {
+  banana: [
+    ['What should I do now?', 'Prune and remove leaves with many dark spots. Do not leave them on the ground.'],
+    ['How can I prevent it from spreading?', 'Clean your tools after use. Give plants enough space and avoid wetting the leaves.'],
+    ['When should I ask for help?', 'If spots keep spreading after removing affected leaves, contact your local agricultural technician.'],
+  ],
+  cacao: [
+    ['What should I do now?', 'Remove fruits that are blackening or rotting. Keep them away from healthy plants.'],
+    ['How can I prevent it from spreading?', 'Clear weeds and improve airflow between branches. Check the fruits regularly.'],
+    ['When should I ask for help?', 'If many fruits are affected or you are unsure, contact your local agricultural technician.'],
   ],
 }
 
@@ -213,10 +436,14 @@ function App() {
   const [location, setLocation] = useState('')
   const fileInput = useRef(null)
   const t = copy[language]
-  const localizedRecommendations = language === 'filipino' ? recommendationsFilipino : recommendations
+  const localizedRecommendations = language === 'english'
+    ? recommendationsEnglish
+    : language === 'filipino'
+      ? recommendationsFilipino
+      : recommendations
 
   useEffect(() => {
-    document.documentElement.lang = language === 'filipino' ? 'fil' : 'ceb'
+    document.documentElement.lang = language === 'english' ? 'en' : language === 'filipino' ? 'fil' : 'ceb'
   }, [language])
 
   function showNotice(message) {
@@ -239,13 +466,13 @@ function App() {
     const file = event.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      showNotice('Palihog pagpili og hulagway nga litrato.')
+      showNotice(t.photoTypeError)
       event.target.value = ''
       return
     }
     const reader = new FileReader()
     reader.onload = () => runAnalysis(crop, reader.result)
-    reader.onerror = () => showNotice('Wala mabasa ang litrato. Sulayi pag-usab.')
+    reader.onerror = () => showNotice(t.photoReadError)
     reader.readAsDataURL(file)
     event.target.value = ''
   }
@@ -277,10 +504,10 @@ function App() {
       link.download = `crop-photo-${item.id}.jpg`
       link.click()
       window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 60_000)
-      showNotice('Na-save ang litrato. Wala pay resulta sa AI.')
+      showNotice(t.photoSavedNotice)
     } catch (error) {
       console.error('Unable to save crop photo for offline submission.', error)
-      showNotice('Wala ma-save ang litrato. Susiha ang koneksyon ug sulayi pag-usab.')
+      showNotice(t.photoSaveError)
     }
   }
 
@@ -300,7 +527,7 @@ function App() {
       predictedDisease: crop === 'banana' ? 'Black Sigatoka' : 'Black Pod Rot',
       confidence: crop === 'banana' ? '87%' : '91%',
       submittedAt: new Date().toLocaleString('en-PH'),
-      location: location || 'Wala gihatag',
+      location: location || t.reportMissingLocation,
       recommendations: localizedRecommendations[crop].map((item) => item[1]),
       note: 'Sample demonstration only. AI prediction, not a confirmed diagnosis.',
     }
@@ -311,11 +538,11 @@ function App() {
     link.download = 'bisaya-crop-doctor-report.json'
     link.click()
     window.setTimeout(() => URL.revokeObjectURL(url), 60_000)
-    showNotice('Na-save ang report sa imong device.')
+    showNotice(t.reportSavedNotice)
   }
 
   function shareReport() {
-    showNotice('Demo lamang: gi-simulate ang malampusong pag-share sa Agri Office.')
+    showNotice(t.reportSharingNotice)
   }
 
   function startPhotoFlow() {
@@ -337,18 +564,19 @@ function App() {
         <div className="topbar-inner">
           <Brand t={t} onHome={() => setPage('home')} />
           <div className="top-actions">
-            <div className="language-switch" aria-label="Pilia ang pinulongan">
+            <div className="language-switch" aria-label={t.languageSelector}>
               <button className={language === 'bisaya' ? 'active' : ''} onClick={() => setLanguage('bisaya')}>Bisaya</button>
               <button className={language === 'filipino' ? 'active' : ''} onClick={() => setLanguage('filipino')}>Filipino</button>
+              <button className={language === 'english' ? 'active' : ''} onClick={() => setLanguage('english')}>English</button>
             </div>
-            <button className={`connection-pill ${online ? 'is-online' : 'is-offline'}`} onClick={toggleConnection} aria-label={online ? 'Switch to offline demo state' : 'Switch to online demo state'}>
+            <button className={`connection-pill ${online ? 'is-online' : 'is-offline'}`} onClick={toggleConnection} aria-label={online ? t.switchOffline : t.switchOnline}>
               <Icon name={online ? 'wifi' : 'wifiOff'} size={16} />
               <span>{online ? t.online : t.offline}</span>
             </button>
           </div>
         </div>
       </header>
-      <input ref={fileInput} className="visually-hidden" type="file" accept="image/*" capture="environment" onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : 'Pilia ang hulagway sa tanom'} />
+      <input ref={fileInput} className="visually-hidden" type="file" accept="image/*" capture="environment" onChange={handleFile} aria-label={t.choosePhoto} />
 
       <main className="main-layout">
         <div className="page-wrap">
@@ -359,9 +587,9 @@ function App() {
           {page === 'home' && (
             <>
               <section className="hero-card">
-                <img className="hero-photo" src={photos.farm} alt="Lush green fields in a tropical farming landscape" />
+                <img className="hero-photo" src={photos.farm} alt={t.heroPhotoAlt} />
                 <div className="hero-overlay" />
-                <svg className="hero-art" viewBox="0 0 280 240" role="img" aria-label={language === 'filipino' ? 'Magsasakang nagsusuri ng halaman' : 'Mag-uuma nga nagsusi sa tanom'}>
+                <svg className="hero-art" viewBox="0 0 280 240" role="img" aria-label={t.heroArtAlt}>
                   <circle cx="146" cy="128" r="101" fill="#dce7c2" opacity=".32" />
                   <path d="M27 212V148m0 25c-23-3-25-26-25-26 19-1 25 11 25 26Zm0-14c22-3 24-25 24-25-18-1-24 11-24 25Zm0-24c-15-6-12-26-12-26 15 4 18 16 12 26Z" fill="#9db879" />
                   <path d="M248 215V136m0 37c-27-4-29-31-29-31 22-1 29 13 29 31Zm0-20c25-4 27-29 27-29-20-1-27 13-27 29Zm0-27c-17-8-13-30-13-30 17 5 20 19 13 30Z" fill="#b5c98b" />
@@ -382,9 +610,9 @@ function App() {
                   <span className="eyebrow"><Icon name="sprout" size={15} /> {t.farmRegion}</span>
                   <h1>{t.welcome}</h1>
                   <p>{t.intro}</p>
-                  <a href="#upload" className="hero-link">Atimanon nato ang uma <Icon name="arrow" size={16} /></a>
+                  <a href="#upload" className="hero-link">{t.heroLink} <Icon name="arrow" size={16} /></a>
                 </div>
-                <div className="hero-stamp"><Icon name="leaf" size={21} /><span>Giya sa<br />atong uma</span></div>
+                <div className="hero-stamp"><Icon name="leaf" size={21} /><span>{t.heroStamp.split('|')[0]}<br />{t.heroStamp.split('|')[1]}</span></div>
               </section>
 
               <section className="home-grid">
@@ -396,7 +624,7 @@ function App() {
                     </div>
                     <div className="crop-options">
                       <button className={`crop-option ${crop === 'banana' ? 'selected' : ''}`} onClick={() => setCrop('banana')} aria-pressed={crop === 'banana'}>
-                        <img src={photos.banana} alt="" /><span className="crop-meta"><strong>{t.banana}</strong><small>Banana</small></span>
+                        <img src={photos.banana} alt="" /><span className="crop-meta"><strong>{t.banana}</strong><small>{t.bananaLatin}</small></span>
                         {crop === 'banana' && <span className="crop-check"><Icon name="check" size={14} /></span>}
                       </button>
                       <button className={`crop-option ${crop === 'cacao' ? 'selected' : ''}`} onClick={() => setCrop('cacao')} aria-pressed={crop === 'cacao'}>
@@ -425,7 +653,7 @@ function App() {
                   <section className={`status-card ${online ? '' : 'status-offline'}`}>
                     <div className="status-top"><span className="status-dot" /><strong>{online ? t.readyTitle : t.offline}</strong><Icon name={online ? 'wifi' : 'wifiOff'} size={17} /></div>
                     {online ? <p>{t.readyText}</p> : <p>{t.offlineText}</p>}
-                    <button className="saved-count" onClick={() => setPage('saved')}><Icon name="image" size={15} />{savedPhotos.length} {t.saved} nga litrato <Icon name="arrow" size={14} /></button>
+                    <button className="saved-count" onClick={() => setPage('saved')}><Icon name="image" size={15} />{savedPhotos.length} {t.savedCount} <Icon name="arrow" size={14} /></button>
                   </section>
                   <div className="trust-note"><Icon name="leaf" size={15} /><span>{t.farmCredit}</span></div>
                 </aside>
@@ -438,15 +666,15 @@ function App() {
               <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{t.analysisDemo}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={`Sample nga hulagway sa ${t[crop]}`} /><span className="photo-badge"><Icon name="image" size={14} /> Sample nga hulagway</span></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={`${t.imageAlt} ${t[crop]}`} /><span className="photo-badge"><Icon name="image" size={14} /> {t.samplePhoto}</span></div>
                   <div className="photo-details"><span><Icon name="plant" size={16} />{t[crop]}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
-                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>Timan-i: sample nga prediction kini.</strong> Dili pa konektado ang AI sa prototype. Dili kini kumpirmadong diagnosis.</p></div>
+                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{t.predictionNotice}</strong> {t.demoNotConnected}</p></div>
                 </div>
                 <div className="result-right">
                   <div className="diagnosis-card">
                     <div className="diagnosis-overline"><span className="diagnosis-dot" /> {t.diseaseLabel} <span className="demo-tag">DEMO</span></div>
                     <h2>{disease}</h2>
-                    <p className="disease-local">{crop === 'banana' ? 'Sigatoka sa saging' : 'Itom nga pagkadunot sa bunga sa cacao'}</p>
+                    <p className="disease-local">{crop === 'banana' ? t.localBananaDisease : t.localCacaoDisease}</p>
                     <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}%</strong></div>
                     <div className="confidence-track"><span style={{ width: `${confidence}%` }} /></div>
                     <p className="confidence-note">{t.confidenceNote}</p>
@@ -465,16 +693,16 @@ function App() {
 
           {page === 'report' && (
             <section className="content-page report-page">
-              <div className="page-heading"><span className="step-label">ALANG SA PAGPAAMBIT</span><h1>{t.reportTitle}</h1><p>Tan-awa ang detalye sa dili pa ipaambit.</p></div>
+              <div className="page-heading"><span className="step-label">{t.reportEyebrow}</span><h1>{t.reportTitle}</h1><p>{t.reportIntro}</p></div>
               <div className="report-sheet">
                 <div className="report-banner"><span className="brand-mark"><Icon name="leaf" size={23} /></span><div><strong>Bisaya Crop Doctor</strong><small>{t.reportSubtitle}</small></div><span className="report-status">DRAFT</span></div>
                 <div className="report-top">
-                  <img src={photo || photos[crop]} alt={`Sample nga hulagway sa ${t[crop]}`} />
-                  <div className="report-diagnosis"><span className="step-label">POSIBLENG SAKIT · DEMO</span><h2>{disease}</h2><p>{t[crop]} <span>·</span> {confidence}% confidence</p></div>
+                  <img src={photo || photos[crop]} alt={`${t.imageAlt} ${t[crop]}`} />
+                  <div className="report-diagnosis"><span className="step-label">{t.reportDiseaseLabel}</span><h2>{disease}</h2><p>{t[crop]} <span>·</span> {confidence}% {t.confidence}</p></div>
                 </div>
                 <div className="report-meta">
                   <div><span>{t.reportDate}</span><strong>{new Date().toLocaleString('en-PH')}</strong></div>
-                  <label><span><Icon name="pin" size={15} /> {t.reportLocation} <small>(opsyonal)</small></span><input value={location} onChange={(event) => setLocation(event.target.value)} placeholder={t.reportLocationPlaceholder} /></label>
+                  <label><span><Icon name="pin" size={15} /> {t.reportLocation} <small>{t.optional}</small></span><input aria-label={t.locationAlt} value={location} onChange={(event) => setLocation(event.target.value)} placeholder={t.reportLocationPlaceholder} /></label>
                 </div>
                 <div className="report-steps"><h3>{t.reportSteps}</h3>{localizedRecommendations[crop].map(([title, text], index) => <div className="report-step" key={title}><span>{index + 1}</span><div><strong>{title}</strong><p>{text}</p></div></div>)}</div>
                 <p className="report-disclaimer">{t.reportDisclaimer}</p>
@@ -487,16 +715,16 @@ function App() {
             <section className="content-page offline-page">
               <div className="offline-hero">
                 <div className="offline-icon"><Icon name="wifiOff" size={31} /></div>
-                <span className="step-label">OFFLINE NGA KAHIMTANG</span>
+                <span className="step-label">{t.offlineEyebrow}</span>
                 <h1>{t.offlineTitle}</h1><p>{t.offlineText}</p>
                 <div className="offline-truth"><Icon name="help" size={17} /><span>{t.offlineTruth}</span></div>
                 <button className="button-secondary offline-choose" onClick={() => fileInput.current?.click()}><Icon name="image" size={18} />{t.choosePhoto}</button>
                 <button className="button-primary" onClick={saveOfflinePhoto}><Icon name="download" size={19} />{t.savePhoto}</button>
-                {savedPhotos.length > 0 && <button className="button-text" onClick={() => setPage('saved')}>Tan-awa ang mga na-save nga litrato <Icon name="arrow" size={15} /></button>}
+                {savedPhotos.length > 0 && <button className="button-text" onClick={() => setPage('saved')}>{t.savedToView} <Icon name="arrow" size={15} /></button>}
               </div>
-              <div className="offline-queue"><div className="queue-heading"><div><span className="step-label">SA DEVICE NIMO</span><h2>{t.queueTitle}</h2></div><span className="queue-count">{savedPhotos.length}</span></div>
-                {savedPhotos.length === 0 ? <p className="queue-empty">{t.noSavedPhotos}</p> : savedPhotos.map((item) => <div className="queue-item" key={item.id}><img src={item.photo} alt="" /><div><strong>{t[item.crop]}</strong><small>Na-save {item.date} · {t.waitingPhoto}</small></div><span className="pending-pill">{t.waiting}</span></div>)}
-                <button className="button-secondary retry-button" disabled={!online} onClick={() => savedPhotos.length ? runAnalysis(savedPhotos[0].crop, savedPhotos[0].photo) : showNotice('Wala pay hulagway nga ipadala.') }><Icon name="wifi" size={18} />{t.retry}</button>
+              <div className="offline-queue"><div className="queue-heading"><div><span className="step-label">{t.devicePhotos}</span><h2>{t.queueTitle}</h2></div><span className="queue-count">{savedPhotos.length}</span></div>
+                {savedPhotos.length === 0 ? <p className="queue-empty">{t.noSavedPhotos}</p> : savedPhotos.map((item) => <div className="queue-item" key={item.id}><img src={item.photo} alt="" /><div><strong>{t[item.crop]}</strong><small>{t.savedDate} {item.date} · {t.waitingPhoto}</small></div><span className="pending-pill">{t.waiting}</span></div>)}
+                <button className="button-secondary retry-button" disabled={!online} onClick={() => savedPhotos.length ? runAnalysis(savedPhotos[0].crop, savedPhotos[0].photo)                 : showNotice(t.noPhotoToSubmit) }><Icon name="wifi" size={18} />{t.retry}</button>
                 {!online && <small className="retry-hint">{t.retryHint}</small>}
               </div>
             </section>
@@ -504,24 +732,24 @@ function App() {
 
           {page === 'saved' && (
             <section className="content-page saved-page">
-              <div className="page-heading"><span className="step-label">LITRATO SA DEVICE</span><h1>{t.savedTitle}</h1><p>{t.offlineQueueIntro}</p></div>
+              <div className="page-heading"><span className="step-label">{t.devicePhotos}</span><h1>{t.savedTitle}</h1><p>{t.savedPhotoIntro}</p></div>
               <div className="saved-list">
-                {savedPhotos.length === 0 ? <div className="empty-state"><span className="empty-icon"><Icon name="image" size={25} /></span><h2>{t.emptySaved}</h2><p>{t.emptySavedText}</p><button className="button-secondary" onClick={() => setPage('home')}>{t.backHome}</button></div> : savedPhotos.map((item) => <article className="saved-row" key={item.id}><img src={item.photo} alt="" /><div className="saved-row-info"><strong>{t[item.crop]}</strong><small>Na-save {item.date}</small><span className="pending-pill">{t.noDiagnosis}</span></div><button className="button-secondary" disabled={!online} onClick={() => runAnalysis(item.crop, item.photo)}>{t.retry}</button></article>)}
+                {savedPhotos.length === 0 ? <div className="empty-state"><span className="empty-icon"><Icon name="image" size={25} /></span><h2>{t.emptySaved}</h2><p>{t.emptySavedText}</p><button className="button-secondary" onClick={() => setPage('home')}>{t.backHome}</button></div> : savedPhotos.map((item) => <article className="saved-row" key={item.id}><img src={item.photo} alt="" /><div className="saved-row-info"><strong>{t[item.crop]}</strong><small>{t.savedDate} {item.date}</small><span className="pending-pill">{t.noDiagnosis}</span></div><button className="button-secondary" disabled={!online} onClick={() => runAnalysis(item.crop, item.photo)}>{t.retry}</button></article>)}
               </div>
             </section>
           )}
 
           {page === 'help' && (
             <section className="content-page help-page">
-              <div className="help-hero"><span className="help-hero-icon"><Icon name="plant" size={29} /></span><span className="step-label">GIYA PARA SA MAG-UUMA</span><h1>{t.helpTitle}</h1><p>{t.helpText}</p></div>
-              <div className="help-cards"><article className="help-card"><span className="help-card-icon"><Icon name="camera" size={20} /></span><h2>Unsaon pagkuha og litrato?</h2><p>Ibutang ang apektadong dahon o bunga sa maayong kahayag. Duola ang camera aron klaro ang mga marka o kadaot.</p></article><article className="help-card"><span className="help-card-icon"><Icon name="wifiOff" size={20} /></span><h2>Walay internet?</h2><p>Mahimo nimong i-save ang litrato sa imong device. Dili makahatag og diagnosis hangtod makabalik ang koneksyon.</p></article><article className="help-card"><span className="help-card-icon"><Icon name="help" size={20} /></span><h2>{t.supportTitle}</h2><p>{t.supportText}</p></article></div>
+              <div className="help-hero"><span className="help-hero-icon"><Icon name="plant" size={29} /></span><span className="step-label">{t.helpEyebrow}</span><h1>{t.helpTitle}</h1><p>{t.helpText}</p></div>
+              <div className="help-cards"><article className="help-card"><span className="help-card-icon"><Icon name="camera" size={20} /></span><h2>{t.photoHelpTitle}</h2><p>{t.photoHelpText}</p></article><article className="help-card"><span className="help-card-icon"><Icon name="wifiOff" size={20} /></span><h2>{t.offlineHelpTitle}</h2><p>{t.offlineHelpText}</p></article><article className="help-card"><span className="help-card-icon"><Icon name="help" size={20} /></span><h2>{t.supportTitle}</h2><p>{t.supportText}</p></article></div>
               <button className="button-primary help-home" onClick={() => setPage('home')}>{t.backHome}<Icon name="arrow" size={17} /></button>
             </section>
           )}
         </div>
       </main>
 
-      <nav className="bottom-nav" aria-label="Main navigation">
+      <nav className="bottom-nav" aria-label={t.mainNav}>
         {[['home', 'plant', t.home], ['saved', 'image', t.savedPhotos], ['help', 'help', t.help]].map(([destination, icon, label]) => (
           <button className={section === destination ? 'active' : ''} key={destination} onClick={() => setPage(destination)} aria-current={section === destination ? 'page' : undefined}><Icon name={icon} size={19} /><span>{label}</span>{destination === 'saved' && savedPhotos.length > 0 && <i>{savedPhotos.length}</i>}</button>
         ))}
