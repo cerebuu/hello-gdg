@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { optionalCopy } from '../optionalCopy.js'
 
 const disclaimer = 'This is a decision aid, not a lab diagnosis.'
 export default function ShareReport({ outcome }) {
@@ -6,6 +7,8 @@ export default function ShareReport({ outcome }) {
   const [visible, setVisible] = useState(false)
   const [copyStatus, setCopyStatus] = useState('')
   const { result, sample, source, language, image, date } = outcome
+  const optionalT = optionalCopy[language]
+  const secondOpinion = result.secondOpinion
   const dateLabel = new Intl.DateTimeFormat('en-PH', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Manila' }).format(new Date(date))
   const provenance = source === 'live' ? 'AI guidance — not confirmed' : `SAMPLE / ${source === 'offline' ? 'Offline demo mode / ' : ''}${sample.label} — not a diagnosis of an uploaded photo`
   const report = [
@@ -13,6 +16,9 @@ export default function ShareReport({ outcome }) {
     `Date: ${dateLabel} (Philippines)`, `Location: ${location.trim() || 'Not provided'}`,
     `Language: ${language}`, `Crop: ${result.crop}`,
     `Problem: ${result.problemNameEnglish}`, result.problemNameLocal,
+    ...(result.knowledgeMatch ? [`${optionalT.knownCondition}: ${result.knowledgeMatch.name}`] : []),
+    ...(secondOpinion ? [`${optionalT.secondCheck}: ${secondOpinion.label} (${formatConfidence(secondOpinion.confidence)})`, optionalT.detectorNote] : []),
+    ...(result.note ? [`${optionalT.disagreement}: ${result.note}`] : []),
     `Confidence: ${result.confidence}`, `Severity: ${result.severity}`,
     ...result.actionSteps.map((step, i) => `${i + 1}. ${step}`),
     `When to call an expert: ${result.whenToCallExpert}`,
@@ -43,6 +49,9 @@ export default function ShareReport({ outcome }) {
         <img className="report-photo" src={image} alt={sample ? 'Sample illustration, not the uploaded photo' : 'Checked plant photo'} />
         <p>{dateLabel} (Philippines) · {location.trim() || 'Location not provided'}</p>
         <h3>{result.problemNameLocal}</h3><p>{result.problemNameEnglish}</p>
+        {result.knowledgeMatch && <p>{optionalT.knownCondition}: {result.knowledgeMatch.name}</p>}
+        {secondOpinion && <p>{optionalT.secondCheck}: {secondOpinion.label} ({formatConfidence(secondOpinion.confidence)})<br />{optionalT.detectorNote}</p>}
+        {result.note && <p><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
         <p>Crop: {result.crop} · Confidence: {result.confidence} · Severity: {result.severity}</p>
         <ol>{result.actionSteps.map((step, i) => <li key={i}>{step}</li>)}</ol>
         <p><strong>When to call an expert:</strong> {result.whenToCallExpert}</p>
@@ -55,10 +64,19 @@ export default function ShareReport({ outcome }) {
       <article className="farmer-card">
         <h2>{language === 'bisaya' ? 'Kard sa mag-uuma' : 'Kard para sa magsasaka'} · Farmer card</h2>
         <p className="provenance">{provenance}</p><p>{result.problemNameLocal}</p>
+        {result.knowledgeMatch && <p>{optionalT.knownCondition}: {result.knowledgeMatch.name}</p>}
+        {secondOpinion && <p>{optionalT.secondCheck}: {secondOpinion.label} ({formatConfidence(secondOpinion.confidence)})<br />{optionalT.detectorNote}</p>}
+        {result.note && <p><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
         <ol>{result.actionSteps.map((step, i) => <li key={i}>{step}</li>)}</ol>
         <p>{result.whenToCallExpert}</p><p>{disclaimer}</p>
       </article>
       <button className="secondary" onClick={() => print('farmer')}>Print large-text farmer card</button>
     </>}
   </section>
+}
+
+function formatConfidence(value) {
+  const numeric = typeof value === 'string' ? Number.parseFloat(value) : value
+  if (!Number.isFinite(numeric)) return ''
+  return `${Math.round(numeric <= 1 ? numeric * 100 : numeric)}%`
 }

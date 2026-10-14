@@ -3,6 +3,17 @@ import { preparePhoto } from './photo.js'
 import { requestDiagnosis } from './diagnose.js'
 import ShareReport from './components/ShareReport.jsx'
 import samples from '../../data/samples.json'
+import { optionalCopy } from './optionalCopy.js'
+import { optionalSampleData } from './optionalSampleData.js'
+
+function sampleResult(sample, language) {
+  const optional = optionalSampleData[sample.id]
+  return {
+    ...sample.results[language],
+    ...(optional || {}),
+    ...(optional?.note ? { note: optional.note[language] } : {}),
+  }
+}
 
 const photos = {
   banana: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=1100&q=78',
@@ -168,7 +179,14 @@ function Icon({ name, size = 20, ...props }) {
     clock: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
     sprout: <><path d="M12 21v-9" /><path d="M12 12C5 12 5 5 5 5c5 0 7 3 7 7ZM12 15c0-5 3-8 7-8 0 0 0 8-7 8Z" /></>,
   }
+
   return <svg {...common}>{paths[name] || paths.leaf}</svg>
+}
+
+function formatConfidence(value) {
+  const numeric = typeof value === 'string' ? Number.parseFloat(value) : value
+  if (!Number.isFinite(numeric)) return ''
+  return `${Math.round(numeric <= 1 ? numeric * 100 : numeric)}%`
 }
 
 function Brand({ t, onHome }) {
@@ -199,6 +217,7 @@ function App() {
   const pending = useRef(null)
   useEffect(() => () => pending.current?.abort(), [])
   const t = copy[language]
+  const optionalT = optionalCopy[language]
   const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}. ${t.nextStepsTitle}`, step]) : []
 
   useEffect(() => {
@@ -211,11 +230,12 @@ function App() {
   }
 
   function selectSample(sample) {
+    const nextResult = sampleResult(sample, language)
     setActiveSample(sample)
     setError('')
     setPhoto(sample.imagePath)
-    setResult(sample.results[language])
-    setOutcome({ result: sample.results[language], sample, source: 'sample', language,
+    setResult(nextResult)
+    setOutcome({ result: nextResult, sample, source: 'sample', language,
       image: sample.imagePath, date: new Date().toISOString() })
     setPage('result')
   }
@@ -223,7 +243,7 @@ function App() {
   function changeLanguage(value) {
     setLanguage(value)
     if (outcome?.sample) {
-      const next = outcome.sample.results[value]
+      const next = sampleResult(outcome.sample, value)
       setResult(next)
       setOutcome({ ...outcome, result: next, language: value })
     } else if (outcome) { setOutcome(null); setResult(null); setPage('home') }
@@ -251,8 +271,9 @@ function App() {
     } catch (problem) {
       setError(problem.name === 'AbortError' ? 'The check took over 15 seconds.' : problem.message)
       setPhoto(backup.imagePath)
-      setResult(backup.results[language])
-      setOutcome({ result: backup.results[language], sample: backup, source: 'offline', language,
+      const backupResult = sampleResult(backup, language)
+      setResult(backupResult)
+      setOutcome({ result: backupResult, sample: backup, source: 'offline', language,
         image: backup.imagePath, date: new Date().toISOString() })
     } finally {
       clearTimeout(timer); pending.current = null; setLoading(false); setPage('result')
@@ -448,6 +469,12 @@ function App() {
                     <div className="diagnosis-overline"><span className="diagnosis-dot" /> {t.diseaseLabel} <span className="demo-tag">{outcome?.source === 'live' ? 'AI' : 'SAMPLE'}</span></div>
                     <h2>{disease}</h2>
                     <p className="disease-local">{result?.problemNameLocal}</p>
+                    {result?.knowledgeMatch && <p className="optional-known">{optionalT.knownCondition}: <strong>{result.knowledgeMatch.name}</strong></p>}
+                    {result?.secondOpinion && <div className="second-opinion">
+                      <span className="second-chip">{optionalT.secondCheck}: {result.secondOpinion.label} · {formatConfidence(result.secondOpinion.confidence)}</span>
+                      <p>{optionalT.detectorNote}</p>
+                    </div>}
+                    {result?.note && <p className="optional-note"><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
                     <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}</strong></div>
                     <p className="confidence-note">Crop: {result?.crop} · Severity: {result?.severity}</p>
                     {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">We're not sure. {t.expertRecommendation}</p>}
