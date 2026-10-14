@@ -52,7 +52,7 @@ export default function ShareReport({ outcome }) {
     {visible && <>
       <article className="print-report">
         <h2>Bisaya Crop Doctor</h2><p className="provenance">{provenance}</p>
-        <img className="report-photo" src={image} alt={sample ? optionalT.reportSamplePhoto : optionalT.reportPhoto} />
+        <img className="report-photo" src={image} alt={sample ? optionalT.reportSamplePhoto : optionalT.reportPhoto} onError={event => { if (sample) event.currentTarget.src = sample.imagePath }} />
         <p>{dateLabel} (Philippines) · {location.trim() || optionalT.location}</p>
         <h3>{result.problemNameLocal}</h3><p>{result.problemNameEnglish}</p>
         {result.knowledgeMatch && <p>{optionalT.knownCondition}: {result.knowledgeMatch.name}</p>}
