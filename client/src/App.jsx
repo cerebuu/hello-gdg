@@ -13,6 +13,19 @@ function sampleResult(sample, language) {
     ...(optional || {}),
     ...(optional?.note ? { note: optional.note[language] } : {}),
   }
+
+}
+
+const samplePhotos = {
+  'banana-leaf-spot': '/samples/banana-leaf-spot.jpg',
+  'banana-wilt': '/samples/banana-wilt.jpg',
+  'cacao-pod-rot': '/samples/cacao-pod-rot.jpg',
+  'healthy-leaf': '/samples/healthy-leaf.jpg',
+  'non-plant': '/samples/non-plant.jpg',
+}
+
+function samplePhoto(sample) {
+  return samplePhotos[sample.id] || sample.imagePath
 }
 
 const photos = {
@@ -20,6 +33,9 @@ const photos = {
   cacao: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1100&q=78',
   farm: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1500&q=80',
 }
+
+// Native-speaker review requested for new sample-photo strings:
+// samplePhotoLabel, analyzeSample, photoCredits, samplePhotoMissing.
 
 const copy = {
   bisaya: {
@@ -92,6 +108,10 @@ const copy = {
     reportLocation: 'Lokasyon',
     expertRecommendation: 'Pakigsulti sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Pananglitan: Davao del Sur',
+    samplePhotoLabel: 'Sample nga litrato, pre-computed nga resulta',
+    analyzeSample: 'Susiha kini nga litrato live',
+    photoCredits: 'Photo credits: Idugang ang kredito kung ma-install na ang tinuod nga mga litrato.',
+    samplePhotoMissing: 'Wala pa ang tinuod nga sample nga litrato. Ibutang ang tukmang file sa client/public/samples.',
   },
   filipino: {
     subtitle: 'Tulong sa pagtukoy ng sakit ng halaman',
@@ -163,6 +183,10 @@ const copy = {
     reportLocation: 'Lokasyon',
     expertRecommendation: 'Kumonsulta sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Halimbawa: Davao del Sur',
+    samplePhotoLabel: 'Sample na larawan, pre-computed na resulta',
+    analyzeSample: 'Suriin ang larawang ito nang live',
+    photoCredits: 'Photo credits: Idagdag ang kredito kapag nailagay na ang totoong mga larawan.',
+    samplePhotoMissing: 'Wala pa ang totoong sample na larawan. Ilagay ang tamang file sa client/public/samples.',
   },
   english: {
     subtitle: 'Help identifying plant diseases',
@@ -220,6 +244,10 @@ const copy = {
     reportLocation: 'Location',
     expertRecommendation: 'Contact your local agricultural technician.',
     reportLocationPlaceholder: 'For example: Davao del Sur',
+    samplePhotoLabel: 'Sample photo, pre-computed result',
+    analyzeSample: 'Analyze this photo live',
+    photoCredits: 'Photo credits: Add credits when the real photos are installed.',
+    samplePhotoMissing: 'The real sample photo is not installed yet. Add the exact file to client/public/samples.',
     queueTitle: 'Waiting for a connection',
     noSavedPhotos: 'No photos waiting yet. Save a photo to add it to the queue.',
     waiting: 'Pending',
@@ -295,7 +323,7 @@ function App() {
   useEffect(() => () => pending.current?.abort(), [])
   const t = copy[language]
   const optionalT = optionalCopy[language]
-  const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}. ${t.nextStepsTitle}`, step]) : []
+  const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}`, step]) : []
 
   useEffect(() => {
     document.documentElement.lang = language === 'filipino' ? 'fil' : language === 'english' ? 'en' : 'ceb'
@@ -306,6 +334,22 @@ function App() {
     window.setTimeout(() => setNotice(''), 3600)
   }
 
+  async function analyzeSampleLive(sample) {
+    const path = samplePhoto(sample)
+    if (path === sample.imagePath) {
+      showNotice(t.samplePhotoMissing)
+      return
+    }
+    try {
+      const response = await fetch(path)
+      if (!response.ok) throw new Error('sample photo unavailable')
+      const file = new File([await response.blob()], `${sample.id}.jpg`, { type: 'image/jpeg' })
+      await handleFile({ target: { files: [file], value: '' } })
+    } catch {
+      showNotice(t.samplePhotoMissing)
+    }
+  }
+
   function selectSample(sample) {
     pending.current?.abort()
     setLoading(false)
@@ -313,10 +357,10 @@ function App() {
     const nextResult = sampleResult(sample, language)
     setActiveSample(sample)
     setError('')
-    setPhoto(sample.imagePath)
+    setPhoto(samplePhoto(sample))
     setResult(nextResult)
     setOutcome({ result: nextResult, sample, source: 'sample', language,
-      image: sample.imagePath, date: new Date().toISOString() })
+    image: samplePhoto(sample), date: new Date().toISOString() })
     setPage('result')
   }
 
@@ -351,11 +395,11 @@ function App() {
       setOutcome({ result: next, source: 'live', language, image: input.preview, date: new Date().toISOString() })
     } catch (problem) {
       setError(t.offlineFriendly)
-      setPhoto(backup.imagePath)
+      setPhoto(samplePhoto(backup))
       const backupResult = sampleResult(backup, language)
       setResult(backupResult)
       setOutcome({ result: backupResult, sample: backup, source: 'offline', language,
-        image: backup.imagePath, date: new Date().toISOString() })
+        image: samplePhoto(backup), date: new Date().toISOString() })
     } finally {
       clearTimeout(timer); clearTimeout(slowTimer); pending.current = null; setLoading(false); setSlow(false); setPage('result')
     }
@@ -543,10 +587,10 @@ function App() {
 
           {page === 'result' && (
             <section className="content-page result-page">
-              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? optionalT.aiGuidance : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
+              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? optionalT.aiGuidance : t.samplePhotoLabel}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : optionalT.sampleIllustration}</span></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} onError={event => { if (outcome?.sample && event.currentSrc.endsWith('.jpg')) event.currentTarget.src = outcome.sample.imagePath }} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : t.samplePhotoLabel}</span></div>
                   <div className="photo-details"><span><Icon name="plant" size={16} />{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
                   <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? optionalT.aiGuidance : optionalT.possibleResult}</strong> {optionalT.disclaimer}</p></div>
                 </div>
@@ -570,9 +614,10 @@ function App() {
                   <div className="recommendation-heading"><div><span className="step-label">{t.nextSteps}</span><h2>{t.nextStepsTitle}</h2></div><Icon name="leaf" size={21} /></div>
                   <div className="recommendations">{localizedRecommendations.map(([title, text], index) => (
                     <article className="recommendation" key={title}>
-                      <span className="rec-number">0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div>
+                      <span className="rec-number">0{index + 1}</span><div><p>{text}</p></div>
                     </article>
                   ))}</div>
+                  {outcome?.source === 'sample' && <button className="button-secondary sample-live-button" onClick={() => analyzeSampleLive(outcome.sample)}>{t.analyzeSample}</button>}
                   <p className="wired-message"><strong>{optionalT.whenToCallExpert}</strong> {result?.whenToCallExpert}</p>
                   <button className="button-primary report-button" onClick={() => setPage('report')}><Icon name="image" size={19} />{t.report}<Icon name="arrow" size={17} /></button>
                 </div>
@@ -617,7 +662,7 @@ function App() {
 
           {page === 'help' && (
             <section className="content-page help-page">
-              <div className="help-hero"><span className="help-hero-icon"><Icon name="plant" size={29} /></span><span className="step-label">GIYA PARA SA MAG-UUMA</span><h1>{t.helpTitle}</h1><p>{t.helpText}</p></div>
+              <div className="help-hero"><span className="help-hero-icon"><Icon name="plant" size={29} /></span><span className="step-label">GIYA PARA SA MAG-UUMA</span><h1>{t.helpTitle}</h1><p>{t.helpText}</p><p className="photo-credit">{t.photoCredits}</p></div>
               <div className="help-cards"><article className="help-card"><span className="help-card-icon"><Icon name="camera" size={20} /></span><h2>Unsaon pagkuha og litrato?</h2><p>Ibutang ang apektadong dahon o bunga sa maayong kahayag. Duola ang camera aron klaro ang mga marka o kadaot.</p></article><article className="help-card"><span className="help-card-icon"><Icon name="wifiOff" size={20} /></span><h2>Walay internet?</h2><p>Mahimo nimong i-save ang litrato sa imong device. Dili makahatag og diagnosis hangtod makabalik ang koneksyon.</p></article><article className="help-card"><span className="help-card-icon"><Icon name="help" size={20} /></span><h2>{t.supportTitle}</h2><p>{t.supportText}</p></article></div>
               <button className="button-primary help-home" onClick={() => setPage('home')}>{t.backHome}<Icon name="arrow" size={17} /></button>
             </section>
