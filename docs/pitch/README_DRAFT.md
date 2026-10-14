@@ -82,6 +82,8 @@ diagnostic system.
 - Banana leaf reference: [Roboflow banana-leaf-disease dataset by LUIS
   MANUEL](https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44),
   public domain.
+- Generalist model: Kilimo Afya, CC BY 4.0.
+- Cacao model reference: cacao-lsksj, CC BY 4.0.
 - Cacao reference: [Br-Al/Cocoa-diseases](https://github.com/Br-Al/Cocoa-diseases).
   Its README reports that 30 to 40 percent of world cocoa production is lost
   to pests and diseases; that figure is attributed to that README and is not a

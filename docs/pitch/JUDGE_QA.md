@@ -2,9 +2,10 @@
 
 ## 1. How accurate is it?
 
-We do not claim an accuracy percentage. This prototype gives possible
-guidance, not confirmation. It needs expert-reviewed evaluation on real,
-consented field photos before accuracy claims would be responsible.
+There is no measured field accuracy for this app. It gives possible guidance,
+not confirmation. Future detector checks may use trained public models as a
+second check, but that is not an accuracy claim and still needs expert-reviewed
+evaluation on consented field photos.
 
 ## 2. Why use Gemini?
 
@@ -21,9 +22,11 @@ opinion.
 
 ## 4. What happens to a farmer’s photo?
 
-In live mode, the submitted image goes to our server so it can call Gemini.
-The API key stays server-side. We should define and publish a retention policy
-before production. Farmers should not upload private images without consent.
+In live mode, the submitted image goes to Google through our server for Gemini.
+If a Roboflow detector key is configured in a future deployment, the image may
+also go to Roboflow. The API key stays server-side. We need a clear retention
+and consent policy before production. Farmers should not upload private images
+without consent.
 
 ## 5. Is it really offline?
 
@@ -77,6 +80,12 @@ The project credits a public-domain Roboflow banana-leaf-disease dataset by
 LUIS MANUEL and the Br-Al/Cocoa-diseases repository as references. These
 references do not establish the app’s accuracy. The current prototype uses
 Gemini rather than claiming to have trained its own detector.
+
+## 16. Why not train our own model?
+
+Training our own model needs time, representative labeled data, and evaluation
+we do not yet have. We use public models and references while keeping a trained
+detector as a possible second check, not as proof of diagnosis.
 
 ## 14. What if the photo is not a plant or is unclear?
 

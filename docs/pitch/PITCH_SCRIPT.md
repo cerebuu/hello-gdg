@@ -62,8 +62,9 @@ prototype with a clear safety boundary.”
 
 ## 2:40–2:52 — Roadmap
 
-“Next, we want an agriculture-source knowledge base, a trained detector as a
-second opinion, more crops and dialects, and extension-officer review.”
+“Next, we want an agriculture-source knowledge base, trained detector checks as
+a second opinion, more crops and dialects, and extension-officer review. Those
+are next steps, not claims about the current live server.”
 
 ## 2:52–3:00 — Closing ask
 
