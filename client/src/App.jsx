@@ -189,6 +189,10 @@ function formatConfidence(value) {
   return `${Math.round(numeric <= 1 ? numeric * 100 : numeric)}%`
 }
 
+function displayConfidence(value, labels) {
+  return labels[value] || value
+}
+
 function Brand({ t, onHome }) {
   return (
     <button className="brand" onClick={onHome} aria-label="Bisaya Crop Doctor home">
@@ -342,6 +346,9 @@ function App() {
 
   const disease = result?.problemNameEnglish || ''
   const confidence = result?.confidence || 'Low'
+  const displayChecks = result?.secondOpinions?.length
+    ? result.secondOpinions
+    : result?.secondOpinion ? [result.secondOpinion] : []
   const section = page === 'result' || page === 'report' || page === 'offline' ? 'home' : page
 
   return (
@@ -366,7 +373,7 @@ function App() {
       <input ref={cameraInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" disabled={loading} onChange={handleFile} aria-label="Take plant photo" />
       <main className="main-layout">
         <div className="page-wrap">
-          <p className="wired-disclaimer">This is a decision aid, not a lab diagnosis.</p>
+          <p className="wired-disclaimer">{optionalT.disclaimer}</p>
           {loading && <p className="wired-message" role="status">{t.analyzing}</p>}
           {error && <p className="wired-error" role="alert">{error}</p>}
           {outcome?.source === 'offline' && <p className="wired-message">Offline demo mode · SAMPLE: {outcome.sample.label}. Not a diagnosis of your uploaded photo.</p>}
@@ -457,12 +464,12 @@ function App() {
 
           {page === 'result' && (
             <section className="content-page result-page">
-              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? 'AI guidance · not confirmed' : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
+              <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? optionalT.aiGuidance : `SAMPLE · ${outcome?.sample?.label}`}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? 'Uploaded plant photo' : 'Sample illustration'} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? 'Uploaded photo' : 'SAMPLE illustration'}</span></div>
-                  <div className="photo-details"><span><Icon name="plant" size={16} />{result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
-                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? 'AI guidance, not a confirmed diagnosis.' : 'SAMPLE result, not a diagnosis of your photo.'}</strong> This is a decision aid, not a lab diagnosis.</p></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : optionalT.sampleIllustration}</span></div>
+                  <div className="photo-details"><span><Icon name="plant" size={16} />{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
+                  <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? optionalT.aiGuidance : optionalT.possibleResult}</strong> {optionalT.disclaimer}</p></div>
                 </div>
                 <div className="result-right">
                   <div className="diagnosis-card">
@@ -470,14 +477,16 @@ function App() {
                     <h2>{disease}</h2>
                     <p className="disease-local">{result?.problemNameLocal}</p>
                     {result?.knowledgeMatch && <p className="optional-known">{optionalT.knownCondition}: <strong>{result.knowledgeMatch.name}</strong></p>}
-                    {result?.secondOpinion && <div className="second-opinion">
-                      <span className="second-chip">{optionalT.secondCheck}: {result.secondOpinion.label} · {formatConfidence(result.secondOpinion.confidence)}</span>
+                    {displayChecks.length > 0 && <div className="second-opinion">
+                      <span className="second-chip">{optionalT.secondCheck}</span>
+                      <ul>{displayChecks.map((check, index) => <li key={`${check.source}-${check.model || check.label}-${index}`}>{check.label} · {formatConfidence(check.confidence)}</li>)}</ul>
                       <p>{optionalT.detectorNote}</p>
                     </div>}
-                    {result?.note && <p className="optional-note"><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
-                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{confidence}</strong></div>
-                    <p className="confidence-note">Crop: {result?.crop} · Severity: {result?.severity}</p>
-                    {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">We're not sure. {t.expertRecommendation}</p>}
+                    {result?.agreement === 'agree' && <span className="agreement-badge">{optionalT.checksAgree}</span>}
+                    {result?.agreement === 'differ' && result.note && <p className="optional-note"><strong>{optionalT.disagreement}:</strong> {result.note}</p>}
+                    <div className="confidence-label"><span>{t.aiConfidence}</span><strong>{displayConfidence(confidence, optionalT.confidenceLabels)}</strong></div>
+                    <p className="confidence-note">{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop} · {optionalT.severity}: {optionalT.severityLabels[result?.severity] || result?.severity}</p>
+                    {(result?.notAPlant || confidence === 'Low') && <p className="wired-message">{optionalT.notSure} {optionalT.contactExpert}</p>}
                   </div>
                   <div className="recommendation-heading"><div><span className="step-label">{t.nextSteps}</span><h2>{t.nextStepsTitle}</h2></div><Icon name="leaf" size={21} /></div>
                   <div className="recommendations">{localizedRecommendations.map(([title, text], index) => (
@@ -485,7 +494,7 @@ function App() {
                       <span className="rec-number">0{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div>
                     </article>
                   ))}</div>
-                  <p className="wired-message"><strong>When to call an expert:</strong> {result?.whenToCallExpert}</p>
+                  <p className="wired-message"><strong>{optionalT.whenToCallExpert}</strong> {result?.whenToCallExpert}</p>
                   <button className="button-primary report-button" onClick={() => setPage('report')}><Icon name="image" size={19} />{t.report}<Icon name="arrow" size={17} /></button>
                 </div>
               </div>
