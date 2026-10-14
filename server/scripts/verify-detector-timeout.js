@@ -3,12 +3,13 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import assert from 'node:assert/strict'
 import { createApp } from '../app.js'
 import { validateDiagnosis } from '../gemini.js'
-import { createRoboflowDetector } from '../roboflow.js'
+import { createDetectorRunner } from '../roboflow.js'
 let signal
-const detector = createRoboflowDetector({ apiKey: 'not-a-credential', timeoutMs: 200,
+const runner = createDetectorRunner({ apiKey: 'not-a-credential',
   fetchImpl: async (_url, options) => { signal = options.signal; return new Promise(() => {}) },
 })
-const server = createApp({ detector }).listen(0, '127.0.0.1')
+const detector = (input, crop, budget) => runner(input, crop, Math.min(200, budget))
+const server = createApp({ detector, classifyCrop: async () => 'banana' }).listen(0, '127.0.0.1')
 await new Promise(resolve => server.once('listening', resolve))
 try {
   const image = readFileSync(process.argv[2] || '/private/tmp/crop-live-verify/banana.png')

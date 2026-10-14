@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type, PartMediaResolutionLevel } from '@google/genai'
-import { candidateConditions, diseases } from './knowledge.js'
+import { candidateConditions, diseases, matchKnowledge } from './knowledge.js'
 import { knowledgeIdFor } from './roboflow.js'
 import { message } from './messages.js'
 
@@ -203,6 +203,13 @@ export function createGeminiDiagnoser({
       throw new Error('Gemini returned invalid JSON', { cause: error })
     }
 
+    const canonical = matchKnowledge(parsed)
+    parsed.problemNameEnglish = canonical?.name || 'unknown'
+    if (['banana', 'cacao'].includes(parsed.crop)) {
+      const evidence = Array.isArray(parsed.visibleEvidence) ? new Set(parsed.visibleEvidence.map(item => String(item).toLowerCase())) : new Set()
+      if ((parsed.confidence === 'High' && (evidence.size < 2 || !matchKnowledge(parsed))) ||
+          (parsed.confidence === 'Medium' && evidence.size === 0)) parsed.confidence = 'Low'
+    }
     return validateDiagnosis(parsed)
   }
 }

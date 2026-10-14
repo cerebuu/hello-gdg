@@ -25,6 +25,7 @@ test('all optional peers stop by the remaining budget and cannot fail the main p
  const runner=createDetectorRunner({apiKey:fixture,fetchImpl:async(_url,options)=>{signals.push(options.signal);return new Promise(()=>{})}})
  const started=performance.now();assert.deepEqual(await runner(input,'banana',80),[])
  assert.ok(performance.now()-started<300);assert.ok(signals.every(signal=>signal.aborted))
+ const hardStart=performance.now();assert.deepEqual(await runner(input,'banana',6000),[]);assert.ok(performance.now()-hardStart>=2900&&performance.now()-hardStart<3500)
  const missing=createDetectorRunner({apiKey:'',fetchImpl:async()=>{throw new Error('must not call')}})
  assert.deepEqual(await missing(input,'banana'),[])
 })
@@ -71,4 +72,13 @@ test('optional crop gate is bounded, validates crop, and skips missing key', asy
  const start=performance.now();assert.equal(await stalled(input),'unknown');assert.ok(performance.now()-start<200)
  const invalid=createCropGate({enabled:true,model:'test',client:{models:{generateContent:async()=>({text:'{"crop":"rice"}'})}}})
  assert.equal(await invalid(input),'unknown')
+})
+
+
+test('new Gemini confidence cannot exceed the evidence rubric; legacy validator stays compatible', async()=>{
+ const {createGeminiDiagnoser}=await import('../gemini.js')
+ const output={...base,problemNameEnglish:'Possible Cordana',confidence:'High',visibleEvidence:['Brown marks']}
+ const diagnose=createGeminiDiagnoser({model:'test-model',client:{models:{generateContent:async()=>({text:JSON.stringify(output)})}}})
+ assert.equal((await diagnose(input)).confidence,'Low')
+ assert.equal(validateDiagnosis({...base,confidence:'High'}).confidence,'High')
 })

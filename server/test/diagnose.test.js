@@ -142,7 +142,7 @@ test('Gemini service requests structured localized output and validates it', asy
     language: 'filipino',
   })
 
-  assert.deepEqual(result, validResult)
+  assert.deepEqual(result, { ...validResult, problemNameEnglish: 'unknown' })
   assert.equal(request.model, 'test-model')
   assert.equal(request.config.responseMimeType, 'application/json')
   assert.equal(request.contents[0].parts[0].text.includes('Filipino'), true)

@@ -5,7 +5,7 @@ import { createGeminiDiagnoser, validateDiagnosis } from '../gemini.js'
 import { detectorModels } from '../roboflow.js'
 const folder='/private/tmp/knowledge-expanded'
 const cases=[['banana-leaf-spot','banana sample, not verified Sigatoka'],['banana-wilt','wilting banana sample, not a supported-class truth label'],['healthy-leaf','healthy-looking banana sample'],['cacao-pod-rot','cacao pod-rot sample'],['non-plant','non-plant sample']]
-const models=['gemini-3.5-flash-lite','gemini-2.5-flash','gemini-3.5-flash']
+const models=process.argv.length>2?process.argv.slice(2):['gemini-3.5-flash-lite','gemini-2.5-flash','gemini-3.5-flash']
 const rows=[]
 const clean=value=>{let text=JSON.stringify(value);for(const field of ['GEMINI_API_KEY','ROBOFLOW_API_KEY'])if(process.env[field])text=text.replaceAll(process.env[field],'[REDACTED]');return JSON.parse(text.replace(/AIza[A-Za-z0-9_-]+/g,'[REDACTED]'))}
 for(const model of models){
@@ -26,5 +26,5 @@ for(const model of models){
   }))
  }finally{await new Promise(resolve=>server.close(resolve))}
 }
-writeFileSync(folder+'/comparison.json',JSON.stringify(clean(rows),null,2))
+writeFileSync(folder+(process.argv.length>2?'/rerun.json':'/comparison.json'),JSON.stringify(clean(rows),null,2))
 console.log('Detector callability: '+(process.env.ROBOFLOW_API_KEY?.trim()?'configured; inspect results':'unverified; key missing'))
