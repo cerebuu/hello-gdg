@@ -1,6 +1,61 @@
 @import "tailwindcss";
 
-body {
-  margin: 0;
-  min-width: 320px;
+:root { font-family: system-ui, sans-serif; color: #173d2b; background: #f4f8f1; font-size: 18px; line-height: 1.6; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+.app-shell { max-width: 760px; margin: auto; padding: 24px 16px 48px; }
+h1 { font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; line-height: 1.1; margin: 8px 0 18px; letter-spacing: -.04em; }
+h2 { font-size: 1.35rem; font-weight: 750; line-height: 1.3; margin: 0 0 12px; }
+h3 { font-size: 1.1rem; font-weight: 700; margin: 18px 0 8px; }
+p { margin: 10px 0; }
+.hero { padding: 18px 4px; }
+.eyebrow { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 750; color: #376847; }
+.disclaimer, .notice { background: #fff8da; border: 1px solid #d7bf65; border-radius: 14px; padding: 16px; }
+.disclaimer { font-weight: 650; }
+.panel, .language { background: white; border: 1px solid #d1ddcd; border-radius: 20px; padding: 20px; margin: 20px 0; }
+.language legend { font-weight: 700; padding: 0 6px; }
+button, .file-button { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 12px; border: 1px solid #166534; background: #166534; color: white; padding: 12px 18px; font: inherit; font-weight: 650; text-align: center; cursor: pointer; white-space: normal; }
+button:hover, .file-button:hover { filter: brightness(.94); }
+.secondary { background: #f0f7ee; color: #14532d; border-color: #adc6a6; }
+.selected { background: #166534; box-shadow: inset 0 0 0 2px white; }
+button:disabled, .disabled { opacity: .55; cursor: not-allowed; }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, .file-button:focus-within { outline: 3px solid #d69216; outline-offset: 3px; }
+.button-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; }
+.button-row > * { flex: 1; }
+.file-button { position: relative; overflow: hidden; }
+.file-button input { position: absolute; width: 100%; height: 100%; inset: 0; opacity: 0; cursor: pointer; }
+.check-button { width: 100%; font-size: 1.2rem; margin-top: 12px; }
+label { display: block; font-weight: 650; margin: 10px 0; }
+select, input:not([type=file]), textarea { width: 100%; min-height: 52px; border: 1px solid #97b192; border-radius: 10px; background: white; padding: 12px; font: inherit; color: #173d2b; }
+.small, figcaption, footer { font-size: .83rem; color: #526551; }
+figure { margin: 18px 0; }
+.photo-preview { display: block; width: 100%; max-height: 340px; object-fit: contain; background: #edf3e8; border-radius: 16px; }
+.sample-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+.sample-buttons button { flex: 1 1 220px; font-size: .9rem; }
+.error { background: #fff1ed; border-left: 4px solid #b44229; padding: 14px; color: #82351c; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.badges span { border: 1px solid #c6d5bc; border-radius: 30px; padding: 5px 12px; font-size: .85rem; background: #f1f6ec; }
+ol { padding-left: 30px; list-style: decimal; }
+li { padding-left: 4px; margin: 12px 0; }
+.steps li { padding: 12px 4px; border-bottom: 1px solid #e1eadb; }
+.print-report, .farmer-card { margin: 24px 0; border: 1px solid #cbdcc2; border-radius: 14px; padding: 20px; overflow-wrap: anywhere; }
+.report-photo { width: 100%; max-height: 250px; object-fit: contain; }
+.farmer-card li { font-size: 1.5rem; line-height: 1.5; font-weight: 650; margin: 24px 0; }
+.provenance { font-weight: 700; color: #77561d; }
+summary { cursor: pointer; padding: 12px 0; }
+footer { margin-top: 30px; }
+@media (max-width: 400px) { .panel { padding: 16px; } .button-row > * { flex-basis: 100%; } }
+@media print {
+  @page { margin: 14mm; }
+  body { background: white; color: black; font-size: 12pt; }
+  .app-shell { max-width: none; margin: 0; padding: 0; }
+  .app-shell > * { display: none; }
+  .app-shell > .outcome { display: block; }
+  .outcome > * { display: none; }
+  .outcome > .share { display: block; border: 0; margin: 0; padding: 0; }
+  .share > * { display: none; }
+  body[data-print=report] .share > .print-report,
+  body[data-print=farmer] .share > .farmer-card { display: block; border: 0; padding: 0; margin: 0; }
+  .farmer-card li { font-size: 22pt; break-inside: avoid; }
+  .report-photo { max-height: 50mm; }
 }

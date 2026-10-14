@@ -1,8 +1,6 @@
-export default function SampleButtons() {
-  return (
-    <section className="rounded-lg border border-dashed border-stone-300 bg-white p-5">
-      <h2 className="font-medium">SampleButtons</h2>
-      <p className="mt-1 text-sm text-stone-500">Placeholder</p>
-    </section>
-  )
+export default function SampleButtons({ samples, onSelect, disabled }) {
+  return <section className="panel">
+    <h2>Try a sample</h2><p>Instant examples, no API call. These are SAMPLE results with placeholder illustrations.</p>
+    <div className="sample-buttons">{samples.map(sample => <button className="secondary" key={sample.id} onClick={() => onSelect(sample)} disabled={disabled}>{sample.label}</button>)}</div>
+  </section>
 }

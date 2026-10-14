@@ -4,7 +4,7 @@
 
 JavaScript, React, Vite, Tailwind CSS via the official Vite plugin,
 Node.js, Express, CORS, and concurrently. Node.js 22.12+ is required;
-Node 24 LTS is recommended. Gemini integration is not implemented.
+Node 24 LTS is recommended. Gemini integration uses the official @google/genai SDK.
 
 ## Run
 
@@ -20,24 +20,21 @@ Client: http://localhost:5173. Server: http://localhost:3001 by default.
 The server reads the root `.env` with Node's built-in environment-file support.
 Vite proxies `/api` to the server using PORT from the environment or root `.env`.
 `npm run build` builds the client into `client/dist`.
-No real API key is needed for the scaffold.
+No real API key is needed for the sample demo.
 
 ## Layout and ownership
 
 | Area | Files and responsibilities | Owner |
 | --- | --- | --- |
-| UI | `client/src/App.jsx`, `client/src/components/PhotoUpload.jsx`, `client/src/components/LanguageToggle.jsx`, API call and loading/error state | @MarkDanielCona |
-| UI | `client/src/components/ResultCard.jsx`, `client/src/components/SampleButtons.jsx`, share-with-agri-office report, styling in `client/src/index.css` | @szi-asesor |
-| Backend | Server Gemini service, `POST /api/diagnose` route, JSON schema validation | @Yknowjeff |
-| Backend and samples | `data/samples.json`, `public/samples/`, server fallback to sample results, `server/scripts/test-diagnose.js` | @Bruce-John-Me |
+| All implementation | Client, server, samples, integration, documentation, and tests | Caleb Adriel Tingson (sole coder) |
 
 `client/` holds the React UI, `server/` the Express API, `data/` future sample
 results, `public/samples/` future sample images, and `docs/` the API contract and
-pitch notes. Listed future responsibilities do not imply implemented features.
-Empty folders retain `.gitkeep`. The client UI renders labeled placeholders.
+pitch notes. 
+Empty folders retain `.gitkeep`. The client provides the diagnosis and labeled sample-demo flow.
 `client/src/mockResult.js` is an illustrative fixture for future UI development.
 
-Nobody edits another person's files without asking in the group chat first.
+Caleb is the sole coder for this prototype. Coordinate any future handoff before editing shared files.
 
 ## Rules
 
