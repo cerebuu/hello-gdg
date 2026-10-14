@@ -1,6 +1,8 @@
 export async function preparePhoto(file, language = 'bisaya') {
   const messages = language === 'filipino'
     ? { type: 'Pumili ng JPEG, PNG, o WebP na larawan.', size: 'Pumili ng larawang 5 MB o mas maliit.', large: 'Masyado pa ring malaki ang larawan. Pumili ng mas maliit na larawan.' }
+    : language === 'english'
+      ? { type: 'Please choose a JPEG, PNG, or WebP image.', size: 'Please choose an image 5 MB or smaller.', large: 'This image is still too large. Please choose a smaller image.' }
     : { type: 'Pilia ang JPEG, PNG, o WebP nga litrato.', size: 'Pilia ang litrato nga 5 MB o mas gamay.', large: 'Dako pa gihapon ang litrato. Pilia ang mas gamay nga litrato.' }
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
     throw new Error(messages.type)

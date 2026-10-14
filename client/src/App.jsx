@@ -9,7 +9,7 @@ import { optionalSampleData } from './optionalSampleData.js'
 function sampleResult(sample, language) {
   const optional = optionalSampleData[sample.id]
   return {
-    ...sample.results[language],
+    ...(sample.results[language] || sample.results.filipino),
     ...(optional || {}),
     ...(optional?.note ? { note: optional.note[language] } : {}),
   }
@@ -164,6 +164,72 @@ const copy = {
     expertRecommendation: 'Kumonsulta sa inyong agricultural technician.',
     reportLocationPlaceholder: 'Halimbawa: Davao del Sur',
   },
+  english: {
+    subtitle: 'Help identifying plant diseases',
+    welcome: 'Let’s care for your crops!',
+    intro: 'Upload a photo of a leaf or fruit to check for possible disease.',
+    chooseCrop: 'Choose your crop',
+    takePhoto: 'Take a Photo',
+    choosePhoto: 'Choose a Photo',
+    photoTip: 'Take a clear photo of the affected area in good light.',
+    supported: 'Supported crops',
+    banana: 'Banana',
+    cacao: 'Cacao',
+    online: 'Online',
+    offline: 'Offline',
+    saved: 'saved',
+    home: 'Home',
+    savedPhotos: 'Saved Photos',
+    help: 'Help',
+    result: 'Analysis Result',
+    report: 'Generate Report',
+    offlineTitle: 'No internet connection',
+    offlineText: 'Online disease analysis is temporarily unavailable. Save the photo and submit it when your connection returns.',
+    savePhoto: 'Save photo on this device',
+    retry: 'Retry submission',
+    savedTitle: 'Saved photos',
+    emptySaved: 'No photos saved yet.',
+    reportTitle: 'Report Preview',
+    helpTitle: 'We’re here to help',
+    helpText: 'Bisaya Crop Doctor helps identify possible diseases in banana and cacao. It does not replace expert advice.',
+    supportTitle: 'When to ask an expert',
+    supportText: 'If the disease is spreading or you are unsure about the result, contact your local agricultural technician.',
+    backHome: 'Back to Home',
+    analyzing: 'Analyzing photo…',
+    analyzingLong: 'The analysis is taking a little longer.',
+    useSample: 'Use a sample instead',
+    offlineFriendly: 'Live analysis did not finish. Showing the sample demo.',
+    analyze: 'View sample result',
+    startHere: 'START HERE',
+    uploadStep: 'Upload or take a photo',
+    goodPhoto: 'A clear photo makes a better guide.',
+    photoHelp: 'Photograph the affected leaf or fruit up close so the signs are easy to see.',
+    farmRegion: 'Davao Region · Here for our farmers',
+    farmCredit: 'Made for farmers in Davao',
+    readyTitle: 'Ready to check',
+    readyText: 'The photo will be submitted for possible guidance.',
+    plantsDescription: 'Two crops grown in our region',
+    plantParts: 'Leaves and fruit',
+    analysisDemo: 'Sample demonstration · Not a real AI diagnosis',
+    diseaseLabel: 'POSSIBLE DISEASE',
+    nextSteps: 'RECOMMENDED NEXT STEPS',
+    nextStepsTitle: 'What should you do?',
+    aiConfidence: 'AI confidence',
+    confidenceNote: 'Sample confidence for demonstration',
+    reportTitle: 'Report Preview',
+    reportLocation: 'Location',
+    expertRecommendation: 'Contact your local agricultural technician.',
+    reportLocationPlaceholder: 'For example: Davao del Sur',
+    queueTitle: 'Waiting for a connection',
+    noSavedPhotos: 'No photos waiting yet. Save a photo to add it to the queue.',
+    waiting: 'Pending',
+    waitingPhoto: 'Waiting to submit',
+    noDiagnosis: 'Not analyzed',
+    offlineTruth: 'Saving a photo does not produce an AI result. No diagnosis is available until the device reconnects.',
+    retryHint: 'You can retry when your connection returns.',
+    offlineQueueIntro: 'Photos saved while offline.',
+    emptySavedText: 'When offline, save a photo here to submit it later.',
+  },
 }
 
 function Icon({ name, size = 20, ...props }) {
@@ -232,7 +298,7 @@ function App() {
   const localizedRecommendations = result ? result.actionSteps.map((step, index) => [`${index + 1}. ${t.nextStepsTitle}`, step]) : []
 
   useEffect(() => {
-    document.documentElement.lang = language === 'filipino' ? 'fil' : 'ceb'
+    document.documentElement.lang = language === 'filipino' ? 'fil' : language === 'english' ? 'en' : 'ceb'
   }, [language])
 
   function showNotice(message) {
@@ -371,6 +437,7 @@ function App() {
             <div className="language-switch" aria-label="Pilia ang pinulongan">
               <button className={language === 'bisaya' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('bisaya')}>Bisaya</button>
               <button className={language === 'filipino' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('filipino')}>Filipino</button>
+              <button className={language === 'english' ? 'active' : ''} disabled={loading} onClick={() => changeLanguage('english')}>English</button>
             </div>
             <button className={`connection-pill ${online ? 'is-online' : 'is-offline'}`} onClick={toggleConnection} aria-label={online ? 'Switch to offline demo state' : 'Switch to online demo state'}>
               <Icon name={online ? 'wifi' : 'wifiOff'} size={16} />
@@ -379,7 +446,7 @@ function App() {
           </div>
         </div>
       </header>
-      <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled={loading} onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : 'Pilia ang hulagway sa tanom'} />
+      <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" disabled={loading} onChange={handleFile} aria-label={language === 'filipino' ? 'Pumili ng larawan ng halaman' : language === 'english' ? 'Choose a plant photo' : 'Pilia ang hulagway sa tanom'} />
 
       <input ref={cameraInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" disabled={loading} onChange={handleFile} aria-label="Take plant photo" />
       <main className="main-layout">

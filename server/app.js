@@ -41,8 +41,8 @@ function parseDiagnosisRequest(body) {
     return { error: 'mimeType must be image/jpeg, image/png, or image/webp' }
   }
 
-  if (!['bisaya', 'filipino'].includes(body.language)) {
-    return { error: 'language must be bisaya or filipino' }
+  if (!['bisaya', 'filipino', 'english'].includes(body.language)) {
+    return { error: 'language must be bisaya, filipino, or english' }
   }
 
   return { imageBytes, mimeType: body.mimeType, language: body.language }
