@@ -1,0 +1,93 @@
+[
+  {
+    "id": "banana-healthy",
+    "crop": "banana",
+    "name": "Healthy",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-sigatoka",
+    "crop": "banana",
+    "name": "Sigatoka",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-cordana",
+    "crop": "banana",
+    "name": "Cordana",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "banana-pestalotiopsis",
+    "crop": "banana",
+    "name": "Pestalotiopsis",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/luis-manuel/banana-leaf-disease-qesr2-m44h9"
+  },
+  {
+    "id": "cacao-healthy",
+    "crop": "cacao",
+    "name": "Healthy",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  },
+  {
+    "id": "cacao-black-pod-rot",
+    "crop": "cacao",
+    "name": "Black pod rot",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  },
+  {
+    "id": "cacao-pod-borer",
+    "crop": "cacao",
+    "name": "Pod borer",
+    "visibleSymptoms": [],
+    "source": "https://github.com/Br-Al/Cocoa-diseases"
+  },
+  {
+    "id": "banana-black-and-yellow-sigatoka",
+    "crop": "banana",
+    "name": "Black and yellow Sigatoka",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/kilimo-afya/kilimo-afya-generalist-model-wlufl"
+  },
+  {
+    "id": "banana-anthracnose",
+    "crop": "banana",
+    "name": "Anthracnose",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/kilimo-afya/kilimo-afya-generalist-model-wlufl"
+  },
+  {
+    "id": "banana-panama-wilt",
+    "crop": "banana",
+    "name": "Panama wilt",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/kilimo-afya/kilimo-afya-generalist-model-wlufl"
+  },
+  {
+    "id": "banana-fruit-scarring-beetle-damage",
+    "crop": "banana",
+    "name": "Fruit-scarring beetle damage",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/kilimo-afya/kilimo-afya-generalist-model-wlufl"
+  },
+  {
+    "id": "cacao-frosty-pod",
+    "crop": "cacao",
+    "name": "Frosty pod",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/cacao-project/cacao-lsksj"
+  },
+  {
+    "id": "cacao-mirid",
+    "crop": "cacao",
+    "name": "Mirid",
+    "visibleSymptoms": [],
+    "source": "https://universe.roboflow.com/cacao-project/cacao-lsksj"
+  }
+]

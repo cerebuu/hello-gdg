@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { createApp } from '../app.js'
+import { combineDiagnosis } from '../combine.js'
+import { message } from '../messages.js'
 import { createGeminiDiagnoser, validateDiagnosis } from '../gemini.js'
 
 const validResult = {
@@ -48,7 +50,7 @@ test('POST /api/diagnose validates and forwards the image request', async () => 
     })
 
     assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), validResult)
+    assert.deepEqual(await response.json(), combineDiagnosis(validResult, [], 'bisaya'))
     assert.equal(received.imageBytes.toString(), 'test image')
     assert.equal(received.mimeType, 'image/jpeg')
     assert.equal(received.language, 'bisaya')
@@ -105,7 +107,7 @@ test('POST /api/diagnose reports provider failures', async () => {
     })
 
     assert.equal(response.status, 500)
-    assert.deepEqual(await response.json(), { error: 'Diagnosis failed. Please try again or contact your agriculture office.' })
+    assert.deepEqual(await response.json(), { error: message('failed', 'filipino') })
     assert.deepEqual(errors[0], ['Diagnosis request failed'])
   })
 })
@@ -140,7 +142,7 @@ test('Gemini service requests structured localized output and validates it', asy
     language: 'filipino',
   })
 
-  assert.deepEqual(result, validResult)
+  assert.deepEqual(result, { ...validResult, problemNameEnglish: 'unknown' })
   assert.equal(request.model, 'test-model')
   assert.equal(request.config.responseMimeType, 'application/json')
   assert.equal(request.contents[0].parts[0].text.includes('Filipino'), true)
@@ -240,7 +242,7 @@ test('whole-call deadline aborts a stalled SDK and returns a safe JSON error', a
       body: JSON.stringify({ imageBase64: 'dGVzdA==', mimeType: 'image/png', language: 'bisaya' }),
     })
     assert.equal(response.status, 500)
-    assert.match((await response.json()).error, /timed out/)
+    assert.match((await response.json()).error, /Dugay kaayo/)
     assert.ok(performance.now() - start < 1000)
     assert.equal(signal.aborted, true)
   })

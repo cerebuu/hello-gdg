@@ -1,0 +1,40 @@
+[
+  {
+    "model": "banana-leaf-disease-qesr2-m44h9/1",
+    "crop": "banana",
+    "type": "detection",
+    "labels": {
+      "healthy": "banana-healthy",
+      "sigatoka": "banana-sigatoka",
+      "cordana": "banana-cordana",
+      "pestalotiopsis": "banana-pestalotiopsis"
+    }
+  },
+  {
+    "model": "kilimo-afya-generalist-model-wlufl/2",
+    "crop": "banana",
+    "type": "classification",
+    "labels": {
+      "banana___healthy": "banana-healthy",
+      "banana___sigatoka": "banana-sigatoka",
+      "banana___black_and_yellow_sigatoka": "banana-black-and-yellow-sigatoka",
+      "banana___cordana": "banana-cordana",
+      "banana___pestalotiopsis": "banana-pestalotiopsis",
+      "banana___anthracnose": "banana-anthracnose",
+      "banana___panama_wilt": "banana-panama-wilt",
+      "banana___fruit_scarring_beetle": "banana-fruit-scarring-beetle-damage"
+    }
+  },
+  {
+    "model": "cacao-project/cacao-lsksj-instant-1",
+    "crop": "cacao",
+    "type": "detection",
+    "weak": true,
+    "labels": {
+      "HEALTHY": "cacao-healthy",
+      "BLACKPOD": "cacao-black-pod-rot",
+      "FROSTYPOD": "cacao-frosty-pod",
+      "MIRID": "cacao-mirid"
+    }
+  }
+]
