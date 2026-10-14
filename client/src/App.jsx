@@ -590,7 +590,13 @@ function App() {
               <div className="page-heading"><span className="step-label">{t.supported.toLocaleUpperCase()}</span><h1>{t.result}</h1><p>{outcome?.source === 'live' ? optionalT.aiGuidance : t.samplePhotoLabel}</p></div>
               <div className="result-layout">
                 <div className="result-left">
-                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} onError={event => { if (outcome?.sample && event.currentSrc.endsWith('.jpg')) event.currentTarget.src = outcome.sample.imagePath }} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : t.samplePhotoLabel}</span></div>
+                  <div className="photo-preview"><img src={photo || photos[crop]} alt={outcome?.source === 'live' ? optionalT.reportPhoto : optionalT.reportSamplePhoto} onError={event => {
+                    if (outcome?.sample && event.currentTarget.dataset.fallback !== 'true') {
+                      event.currentTarget.dataset.fallback = 'true'
+                      event.currentTarget.src = outcome.sample.imagePath
+                      event.currentTarget.alt = optionalT.reportSamplePhoto
+                    }
+                  }} /><span className="photo-badge"><Icon name="image" size={14} /> {outcome?.source === 'live' ? optionalT.uploadedPhoto : t.samplePhotoLabel}</span></div>
                   <div className="photo-details"><span><Icon name="plant" size={16} />{optionalT.crop}: {optionalT.cropLabels[result?.crop] || result?.crop}</span><span><Icon name="clock" size={16} />{new Date().toLocaleDateString('en-PH')}</span></div>
                   <div className="demo-disclaimer"><Icon name="help" size={18} /><p><strong>{outcome?.source === 'live' ? optionalT.aiGuidance : optionalT.possibleResult}</strong> {optionalT.disclaimer}</p></div>
                 </div>
